@@ -13,7 +13,7 @@
  * @return true if the move was successful, false otherwise
  */
 
-bool moove_player( BoardCell board[BOARD_ROWS][BOARD_COLS], Position start, Position end, Teams pawn_team );
+bool moove_player( BoardCell board[BOARD_ROWS][BOARD_COLS], Position start, Position end, TeamsColor pawn_team );
 
 /**
  * @brief Check if the position is valide
@@ -34,6 +34,5 @@ bool is_position_accessible( BoardCell board[BOARD_ROWS][BOARD_COLS], Position s
  * @return true if it can, false otherwise
  */
 bool is_movement_possible( BoardCell board[BOARD_ROWS][BOARD_COLS], Position start, Position end );
-
 
 #endif // MOVEMENT_H

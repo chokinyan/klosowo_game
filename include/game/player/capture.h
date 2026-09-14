@@ -12,7 +12,7 @@
  * @return true is success, false otherwise
  */
 
-bool linca( BoardCell board[BOARD_ROWS][BOARD_COLS], Position pos, Teams pawn_team );
+bool linca( BoardCell board[BOARD_ROWS][BOARD_COLS], Position pos, TeamsColor pawn_team );
 
 /**
  * @brief
@@ -22,7 +22,7 @@ bool linca( BoardCell board[BOARD_ROWS][BOARD_COLS], Position pos, Teams pawn_te
  * @param end
  * @return true is success, false otherwise
  */
-bool seultout( BoardCell board[BOARD_ROWS][BOARD_COLS], Position start, Position end, Teams pawn_team );
+bool seultout( BoardCell board[BOARD_ROWS][BOARD_COLS], Position start, Position end, TeamsColor pawn_team );
 
 /**
  * @brief
@@ -32,9 +32,5 @@ bool seultout( BoardCell board[BOARD_ROWS][BOARD_COLS], Position start, Position
  * @return true is success, false otherwise
  */
 bool capture( BoardCell board[BOARD_ROWS][BOARD_COLS], Position target_position );
-
-bool check_pawn_is_enemy( Teams pawn_team, BoardCell board_cell_check );
-
-bool check_pawn_is_mate( Teams pawn_team, BoardCell board_cell_check );
 
 #endif // CAPTURE_H

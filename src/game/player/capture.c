@@ -1,7 +1,8 @@
 #include "game/player/capture.h"
 #include "game/board.h"
+#include "game/player/team_check.h"
 
-bool seultout( BoardCell board[BOARD_ROWS][BOARD_COLS], Position start, Position end, Teams pawn_team )
+bool seultout( BoardCell board[BOARD_ROWS][BOARD_COLS], Position start, Position end, TeamsColor pawn_team )
 {
 
     if ( start.x != end.x ) // Check for x
@@ -59,7 +60,7 @@ bool seultout( BoardCell board[BOARD_ROWS][BOARD_COLS], Position start, Position
     return false;
 }
 
-bool linca( BoardCell board[BOARD_ROWS][BOARD_COLS], Position pos, Teams pawn_team )
+bool linca( BoardCell board[BOARD_ROWS][BOARD_COLS], Position pos, TeamsColor pawn_team )
 {
     Position kill_pawn_position[4] = { 0 };
 
@@ -129,42 +130,4 @@ bool capture( BoardCell board[BOARD_ROWS][BOARD_COLS], Position target_position 
     board[target_position.y][target_position.x].type = EMPTY;
 
     return true;
-}
-
-bool check_pawn_is_enemy( Teams pawn_team, BoardCell board_cell_check )
-{
-    if ( board_cell_check.type == BARRER || board_cell_check.pawn != NULL_PAWN )
-    {
-        return false;
-    }
-
-    if ( pawn_team == RED && board_cell_check.type != RED_TEAM )
-    {
-        return board_cell_check.type != EMPTY;
-    }
-    else if ( pawn_team == BLUE && board_cell_check.type != BLUE_TEAM )
-    {
-        return board_cell_check.type != EMPTY;
-    }
-
-    return false;
-}
-
-bool check_pawn_is_mate( Teams pawn_team, BoardCell board_cell_check )
-{
-    if ( board_cell_check.type == BARRER || board_cell_check.pawn != NULL_PAWN )
-    {
-        return false;
-    }
-
-    if ( pawn_team == RED && board_cell_check.type == RED_TEAM )
-    {
-        return board_cell_check.type != EMPTY;
-    }
-    else if ( pawn_team == BLUE && board_cell_check.type == BLUE_TEAM )
-    {
-        return board_cell_check.type != EMPTY;
-    }
-
-    return false;
 }

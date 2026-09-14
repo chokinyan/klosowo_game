@@ -7,6 +7,16 @@
 #define BOARD_ROWS 7
 #define BOARD_COLS 11
 
+// Tout les type de logger possible
+typedef enum
+{
+    LOG,
+    DEBUG,
+    WARN,
+    ERROR,
+    BASELOG,
+} LogError;
+
 /**
  * @brief Positon structur
  */
@@ -43,11 +53,11 @@ typedef enum
  * @brief All possible teams color
  *
  */
-typedef enum Teams
+typedef enum TeamsColor
 {
     BLUE,
     RED
-} Teams;
+} TeamsColor;
 
 /**
  * @brief Represent a board cell content

@@ -2,7 +2,7 @@
 #include "game/board.h"
 #include "game/player/capture.h"
 
-bool moove_player( BoardCell board[BOARD_ROWS][BOARD_COLS], Position start, Position end, Teams pawn_team )
+bool moove_player( BoardCell board[BOARD_ROWS][BOARD_COLS], Position start, Position end, TeamsColor pawn_team )
 {
 
     if ( !is_position_accessible( board, start, end ) )

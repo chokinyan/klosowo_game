@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -O3 -Wall -Wextra -g -Isrc/include `pkg-config --cflags gtk4`
+CFLAGS = -O3 -Wall -Wextra -g -Iinclude `pkg-config --cflags gtk4`
 LIBS = `pkg-config --libs gtk4`
 
 SRC_DIR = src
@@ -33,3 +33,4 @@ doc:
 
 clean:
 	rm -rf $(DIST_DIR)
+	clear
