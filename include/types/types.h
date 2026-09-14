@@ -40,6 +40,16 @@ typedef enum
 } CellsType;
 
 /**
+ * @brief All possible teams color
+ *
+ */
+typedef enum Teams
+{
+    BLUE,
+    RED
+} Teams;
+
+/**
  * @brief Represent a board cell content
  */
 typedef struct BoardCell

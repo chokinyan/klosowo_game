@@ -1,7 +1,8 @@
 #include "game/player/movement.h"
 #include "game/board.h"
+#include "game/player/capture.h"
 
-bool moove_player( BoardCell board[BOARD_ROWS][BOARD_COLS], Position start, Position end )
+bool moove_player( BoardCell board[BOARD_ROWS][BOARD_COLS], Position start, Position end, Teams pawn_team )
 {
 
     if ( !is_position_accessible( board, start, end ) )
@@ -13,7 +14,8 @@ bool moove_player( BoardCell board[BOARD_ROWS][BOARD_COLS], Position start, Posi
     board[end.y][end.x] = board[start.y][start.x];
     board[start.y][start.x].pawn = NULL_PAWN;
 
-    
+    seultout( board, start, end, pawn_team );
+    linca( board, end, pawn_team );
 
     return true;
 }

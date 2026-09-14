@@ -13,7 +13,7 @@
  * @return true if the move was successful, false otherwise
  */
 
-bool moove_player( BoardCell board[BOARD_ROWS][BOARD_COLS], Position start, Position end );
+bool moove_player( BoardCell board[BOARD_ROWS][BOARD_COLS], Position start, Position end, Teams pawn_team );
 
 /**
  * @brief Check if the position is valide
