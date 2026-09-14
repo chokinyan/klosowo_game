@@ -1,5 +1,5 @@
-#ifndef TEAM_CHECK_H
-#define TEAM_CHECK_H
+#ifndef KLOSNOWO_TEAM_CHECK_H
+#define KLOSNOWO_TEAM_CHECK_H
 
 #include "types/types.h"
 #include <stdbool.h>
@@ -12,6 +12,4 @@ char *color_name( TeamsColor pawn_team );
 
 bool check_pawn_is_enemy( TeamsColor pawn_team, BoardCell board_cell_check );
 
-
-
-#endif // TEAM_CHECK_H
+#endif // KLOSNOWO_TEAM_CHECK_H

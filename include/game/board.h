@@ -1,9 +1,15 @@
-#ifndef GAME_BOARD_H
-#define GAME_BOARD_H
+#ifndef KLOSNOWO_GAME_BOARD_H
+#define KLOSNOWO_GAME_BOARD_H
 
 #include "types/types.h"
 
 #include <stdbool.h>
+
+extern bool game_ended;
+extern int current_tour;
+extern TeamsColor current_team;
+extern SelectedPawn is_pawn_selected;
+extern BoardCell game_board[BOARD_ROWS][BOARD_COLS];
 
 /**
  * @brief Setup the board with initial values
@@ -11,14 +17,14 @@
  * @param red_pawns Array of red pawns
  * @param blue_pawns Array of blue pawns
  */
-void setup_board( BoardCell board[BOARD_ROWS][BOARD_COLS] );
+void setup_board();
 
 /**
  * @brief Check if a position is valid
  * @param pos Position to check
  * @return true if the position is valid, false otherwise
  */
-bool is_valid_position( BoardCell board[BOARD_ROWS][BOARD_COLS], Position pos );
+bool is_valid_position( Position pos );
 
 /**
  * @brief Check if position is out of bound
@@ -32,11 +38,15 @@ bool is_out_of_bound( Position pos );
 /**
  * @brief check if somethik is in a cell
  *
- * @param board
  * @param pos
  * @return true if nothing, false otherwise
  */
+bool is_nothing_in_cell( Position pos );
 
-bool is_nothing_in_cell( BoardCell board[BOARD_ROWS][BOARD_COLS], Position pos );
+bool is_diagonal( Position pos );
+
+bool is_own_side( TeamsColor team, Position pos );
+
+bool is_player_around( Position pos );
 
 #endif

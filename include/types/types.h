@@ -1,11 +1,14 @@
-#ifndef TYPES_H
-#define TYPES_H
+#ifndef KLOSNOWO_TYPES_H
+#define KLOSNOWO_TYPES_H
 
+#include <stdbool.h>
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 500
 
 #define BOARD_ROWS 7
 #define BOARD_COLS 11
+
+#define MAX_TOUR 64
 
 // Tout les type de logger possible
 typedef enum
@@ -32,8 +35,10 @@ typedef struct Position
 typedef enum
 {
     NULL_PAWN,
-    KING,
-    TOWER
+    BLUE_KING,
+    BLUE_SOLDIER,
+    RED_KING,
+    RED_SOLDIER,
 } PawnType;
 
 /**
@@ -66,6 +71,17 @@ typedef struct BoardCell
 {
     PawnType pawn;
     CellsType type;
+    bool is_selected;
 } BoardCell;
+
+/**
+ * @brief Represent a selected pawn
+ * 
+ */
+typedef struct SelectedPawn
+{
+    Position position;
+    bool is_selected;
+} SelectedPawn;
 
 #endif

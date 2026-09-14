@@ -2,7 +2,7 @@
 #include "game/board.h"
 #include "game/player/team_check.h"
 
-bool seultout( BoardCell board[BOARD_ROWS][BOARD_COLS], Position start, Position end, TeamsColor pawn_team )
+bool seultout( Position start, Position end, TeamsColor pawn_team )
 {
 
     if ( start.x != end.x ) // Check for x
@@ -12,8 +12,8 @@ bool seultout( BoardCell board[BOARD_ROWS][BOARD_COLS], Position start, Position
         if ( is_out_of_bound( end ) ) // Check out of bound for next cell
             return false;
 
-        if ( is_nothing_in_cell( board, end ) || board[end.y][end.x].type == BARRER ||
-             check_pawn_is_mate( pawn_team, board[end.y][end.x] ) ) // Check if there a pawn
+        if ( is_nothing_in_cell( end ) || game_board[end.x][end.y].type == BARRER ||
+             check_pawn_is_mate( pawn_team, game_board[end.x][end.y] ) ) // Check if there a pawn
             return false;
 
         end.x += step;
@@ -21,16 +21,16 @@ bool seultout( BoardCell board[BOARD_ROWS][BOARD_COLS], Position start, Position
         if ( is_out_of_bound( end ) ) // Check out of bound for next cell
         {
 
-            capture( board, ( Position ){ .x = end.x - step, .y = end.y } );
+            capture( ( Position ){ .x = end.x - step, .y = end.y } );
 
             return true;
         }
 
-        if ( is_nothing_in_cell( board, end ) && board[end.y][end.x].type != BARRER &&
-             check_pawn_is_mate( pawn_team, board[end.y][end.x] ) ) // Check if there a pawn
+        if ( is_nothing_in_cell( end ) && game_board[end.x][end.y].type != BARRER &&
+             check_pawn_is_mate( pawn_team, game_board[end.x][end.y] ) ) // Check if there a pawn
         {
 
-            capture( board, ( Position ){ .x = end.x - step, .y = end.y } );
+            capture( ( Position ){ .x = end.x - step, .y = end.y } );
 
             return true;
         }
@@ -43,33 +43,40 @@ bool seultout( BoardCell board[BOARD_ROWS][BOARD_COLS], Position start, Position
         if ( is_out_of_bound( end ) ) // Check out of bound for next cell
             return false;
 
-        if ( is_nothing_in_cell( board, end ) || board[end.y][end.x].type == BARRER ||
-             check_pawn_is_mate( pawn_team, board[end.y][end.x] ) ) // Check if there a pawn
+        if ( is_nothing_in_cell( end ) || game_board[end.y][end.x].type == BARRER ||
+             check_pawn_is_mate( pawn_team, game_board[end.y][end.x] ) ) // Check if there a pawn
             return false;
 
         end.y += step;
 
-        if ( is_out_of_bound( end ) ) // Check out of bound for next cell
-            return true;
+        if ( is_out_of_bound( end ) )
+        {
 
-        if ( is_nothing_in_cell( board, end ) && board[end.y][end.x].type != BARRER &&
-             check_pawn_is_mate( pawn_team, board[end.y][end.x] ) ) // Check if there no pawn
+            capture( ( Position ){ .x = end.x - step, .y = end.y } );
             return true;
+        } // Check out of bound for next cell
+
+        if ( is_nothing_in_cell( end ) && game_board[end.x][end.y].type != BARRER &&
+             check_pawn_is_mate( pawn_team, game_board[end.x][end.y] ) )
+        {
+            capture( ( Position ){ .x = end.x - step, .y = end.y } );
+            return true;
+        } // Check if there no pawn
     }
 
     return false;
 }
 
-bool linca( BoardCell board[BOARD_ROWS][BOARD_COLS], Position pos, TeamsColor pawn_team )
+bool linca( Position pos, TeamsColor pawn_team )
 {
     Position kill_pawn_position[4] = { 0 };
 
     // Start Check for x up
-    if ( is_out_of_bound( ( Position ){ .x = pos.x + 1, .y = pos.y } ) ||
-         is_out_of_bound( ( Position ){ .x = pos.x + 2, .y = pos.y } ) )
+    if ( !is_out_of_bound( ( Position ){ .x = pos.x + 1, .y = pos.y } ) &&
+         !is_out_of_bound( ( Position ){ .x = pos.x + 2, .y = pos.y } ) )
     {
-        if ( check_pawn_is_enemy( pawn_team, board[pos.y][pos.x + 1] ) &&
-             check_pawn_is_mate( pawn_team, board[pos.y][pos.x + 2] ) )
+        if ( check_pawn_is_enemy( pawn_team, game_board[pos.x + 1][pos.y] ) &&
+             check_pawn_is_mate( pawn_team, game_board[pos.x + 2][pos.y] ) )
         {
             kill_pawn_position[0] = ( Position ){ .x = pos.x + 1, .y = pos.y };
         }
@@ -77,11 +84,11 @@ bool linca( BoardCell board[BOARD_ROWS][BOARD_COLS], Position pos, TeamsColor pa
     // End checking for x up
 
     // Start checking for x down
-    if ( is_out_of_bound( ( Position ){ .x = pos.x - 1, .y = pos.y } ) ||
-         is_out_of_bound( ( Position ){ .x = pos.x - 2, .y = pos.y } ) )
+    if ( !is_out_of_bound( ( Position ){ .x = pos.x - 1, .y = pos.y } ) &&
+         !is_out_of_bound( ( Position ){ .x = pos.x - 2, .y = pos.y } ) )
     {
-        if ( check_pawn_is_enemy( pawn_team, board[pos.y][pos.x - 1] ) &&
-             check_pawn_is_mate( pawn_team, board[pos.y][pos.x - 2] ) )
+        if ( check_pawn_is_enemy( pawn_team, game_board[pos.x - 1][pos.y] ) &&
+             check_pawn_is_mate( pawn_team, game_board[pos.x - 2][pos.y] ) )
         {
             kill_pawn_position[1] = ( Position ){ .x = pos.x - 1, .y = pos.y };
         }
@@ -89,11 +96,11 @@ bool linca( BoardCell board[BOARD_ROWS][BOARD_COLS], Position pos, TeamsColor pa
     // End checking for x down
 
     // Start checking for y up
-    if ( is_out_of_bound( ( Position ){ .x = pos.x, .y = pos.y + 1 } ) ||
-         is_out_of_bound( ( Position ){ .x = pos.x, .y = pos.y + 2 } ) )
+    if ( !is_out_of_bound( ( Position ){ .x = pos.x, .y = pos.y + 1 } ) &&
+         !is_out_of_bound( ( Position ){ .x = pos.x, .y = pos.y + 2 } ) )
     {
-        if ( check_pawn_is_enemy( pawn_team, board[pos.y + 1][pos.x] ) &&
-             check_pawn_is_mate( pawn_team, board[pos.y + 2][pos.x] ) )
+        if ( check_pawn_is_enemy( pawn_team, game_board[pos.x][pos.y + 1] ) &&
+             check_pawn_is_mate( pawn_team, game_board[pos.x][pos.y + 2] ) )
         {
             kill_pawn_position[2] = ( Position ){ .x = pos.x, .y = pos.y + 1 };
         }
@@ -101,11 +108,11 @@ bool linca( BoardCell board[BOARD_ROWS][BOARD_COLS], Position pos, TeamsColor pa
     // End checking for y up
 
     // Start checking for y down
-    if ( is_out_of_bound( ( Position ){ .x = pos.x, .y = pos.y - 1 } ) ||
-         is_out_of_bound( ( Position ){ .x = pos.x, .y = pos.y - 2 } ) )
+    if ( !is_out_of_bound( ( Position ){ .x = pos.x, .y = pos.y - 1 } ) &&
+         !is_out_of_bound( ( Position ){ .x = pos.x, .y = pos.y - 2 } ) )
     {
-        if ( check_pawn_is_enemy( pawn_team, board[pos.y - 1][pos.x] ) &&
-             check_pawn_is_mate( pawn_team, board[pos.y - 2][pos.x] ) )
+        if ( check_pawn_is_enemy( pawn_team, game_board[pos.x][pos.y - 1] ) &&
+             check_pawn_is_mate( pawn_team, game_board[pos.x][pos.y - 2] ) )
         {
             kill_pawn_position[3] = ( Position ){ .x = pos.x, .y = pos.y - 1 };
         }
@@ -116,18 +123,26 @@ bool linca( BoardCell board[BOARD_ROWS][BOARD_COLS], Position pos, TeamsColor pa
     {
         if ( kill_pawn_position[i].x != 0 && kill_pawn_position[i].y != 0 )
         {
-            capture( board, kill_pawn_position[i] );
+            capture( kill_pawn_position[i] );
         }
     }
 
     return true;
 }
 
-bool capture( BoardCell board[BOARD_ROWS][BOARD_COLS], Position target_position )
+bool capture( Position target_position )
 {
 
-    board[target_position.y][target_position.x].pawn = NULL_PAWN;
-    board[target_position.y][target_position.x].type = EMPTY;
+    BoardCell target = game_board[target_position.x][target_position.y];
+
+    if ( target.pawn == RED_KING || target.pawn == BLUE_KING )
+    {
+        game_ended = true;
+        return true;
+    }
+
+    game_board[target_position.x][target_position.y].pawn = NULL_PAWN;
+    game_board[target_position.x][target_position.y].type = EMPTY;
 
     return true;
 }

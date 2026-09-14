@@ -1,3 +1,4 @@
+#include "game/board.h"
 #include "window/window.h"
 
 void activate( GtkApplication *app )
@@ -13,6 +14,8 @@ int main( int argc, char **argv )
 {
     GtkApplication *app;
     int status;
+
+    setup_board();
 
     app = gtk_application_new( "org.gtk.example", G_APPLICATION_DEFAULT_FLAGS );
     g_signal_connect( app, "activate", G_CALLBACK( activate ), NULL );

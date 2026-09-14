@@ -8,8 +8,8 @@
  * @copyright Copyright (c) 2026
  *
  */
-#ifndef LOG_H
-#define LOG_H
+#ifndef KLOSNOWO_LOG_H
+#define KLOSNOWO_LOG_H
 
 // Style de text possible
 #define ANSI_RESET "\033[0m"

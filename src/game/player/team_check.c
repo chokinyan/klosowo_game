@@ -2,7 +2,7 @@
 
 bool check_pawn_is_enemy( TeamsColor pawn_team, BoardCell board_cell_check )
 {
-    if ( board_cell_check.type == BARRER || board_cell_check.pawn != NULL_PAWN )
+    if ( board_cell_check.type == BARRER || board_cell_check.pawn == NULL_PAWN )
     {
         return false;
     }
@@ -21,7 +21,7 @@ bool check_pawn_is_enemy( TeamsColor pawn_team, BoardCell board_cell_check )
 
 bool check_pawn_is_mate( TeamsColor pawn_team, BoardCell board_cell_check )
 {
-    if ( board_cell_check.type == BARRER || board_cell_check.pawn != NULL_PAWN )
+    if ( board_cell_check.type == BARRER || board_cell_check.pawn == NULL_PAWN )
     {
         return false;
     }
