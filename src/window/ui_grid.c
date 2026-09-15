@@ -105,6 +105,9 @@ void cell_on_click( GtkGestureClick *gesture, int n_press, double x, double y, g
     (void)gesture;
     (void)n_press;
 
+    if ( ( is_client || is_server ) && current_team != my_color )
+        return;
+
     GtkWidget *area = GTK_WIDGET( user_data );
 
     int area_width = gtk_widget_get_width( area );
@@ -132,6 +135,7 @@ void cell_on_click( GtkGestureClick *gesture, int n_press, double x, double y, g
                 {
                     place_barrer( ( Position ){ .x = row, .y = col }, current_team );
                     current_tour++;
+                    current_team = ( current_team == RED ) ? BLUE : RED;
                     log_debug( "Message envoyé au serveur : %d.%d\n", row, col );
                 }
 

@@ -21,7 +21,6 @@ extern bool is_client;
 extern bool is_connected;
 
 extern char *opposent_ip;
-
 // Tout les type de logger possible
 typedef enum
 {
@@ -75,6 +74,8 @@ typedef enum TeamsColor
     BLUE,
     RED
 } TeamsColor;
+
+extern TeamsColor my_color;
 
 /**
  * @brief Represent a board cell content
