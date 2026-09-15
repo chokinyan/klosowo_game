@@ -143,7 +143,7 @@ void cell_on_click( GtkGestureClick *gesture, int n_press, double x, double y, g
                 }
                 else
                 {
-                    place_barrer( ( Position ){ .x = row, .y = col }, current_team );
+                    place_barrer( ( Position ){ .x = row, .y = col } );
                     current_tour++;
                     current_team = ( current_team == RED ) ? BLUE : RED;
                     log_debug( "Message envoyé au serveur : %d.%d\n", row, col );
@@ -152,7 +152,7 @@ void cell_on_click( GtkGestureClick *gesture, int n_press, double x, double y, g
 
                 return;
             }
-            if ( place_barrer( ( Position ){ .x = row, .y = col }, current_team ) )
+            if ( place_barrer( ( Position ){ .x = row, .y = col } ) )
             {
                 current_tour++;
                 current_team = ( current_team == RED ) ? BLUE : RED;
@@ -258,7 +258,7 @@ gboolean on_network_data( GIOChannel *source, GIOCondition condition, gpointer u
 
     if ( current_tour < 2 ) // Place barrier phase
     {
-        if ( !place_barrer( end, current_team ) )
+        if ( !place_barrer( end ) )
         {
             log_warn( "Impossible de placer un mur à la position (%d,%d) Avec l'équipe %s", end.x, end.y,
                       current_team == RED ? "rouge" : "bleue" );
