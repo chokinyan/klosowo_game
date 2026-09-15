@@ -37,8 +37,7 @@ bool init_server( struct sockaddr_in addr )
     sock_fd = accept( listen_fd, NULL, NULL );
     if ( opposent_ip == NULL )
         opposent_ip = inet_ntoa( addr.sin_addr );
-    close( listen_fd ); // On ferme la socket d'ecoute
-                        // car on a notre joueur
+
     if ( sock_fd < 0 )
         return 0;
     return 1;
@@ -58,7 +57,6 @@ int network_receive( char *buffer, int max_len )
     // On vide le tableau avant de lire
     memset( buffer, 0, max_len );
 
-    
     // On attend de recevoir des octets venant du reseau
     int bytes = recv( sock_fd, buffer, max_len - 1, 0 );
     if ( bytes <= 0 )

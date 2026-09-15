@@ -247,6 +247,13 @@ gboolean on_network_data( GIOChannel *source, GIOCondition condition, gpointer u
     if ( sscanf( buffer, "%hu.%hu,%hu.%hu", &start.x, &start.y, &end.x, &end.y ) != 4 )
         return TRUE; // format invalide, ignore
 
+    if ( current_tour < 2 ) // Place barrier phase
+    {
+        place_barrer( end, current_team );
+        current_tour++;
+        current_team = ( current_team == RED ) ? BLUE : RED;
+    }
+
     if ( moove_player( start, end, current_team ) )
     {
         game_board[start.x][start.y].is_selected = false;

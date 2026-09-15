@@ -45,7 +45,7 @@ void init_game_board( GtkWidget *window )
     GtkWidget *area;
     GtkGesture *click;
 
-    TeamsColor my_color = is_server ? RED : BLUE;
+    my_color = is_server ? RED : BLUE;
 
     area = gtk_drawing_area_new();
 

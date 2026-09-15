@@ -8,6 +8,7 @@ TeamsColor current_team;
 bool game_ended;
 SelectedPawn is_pawn_selected;
 Position diagonal_pos[11];
+TeamsColor my_color;
 
 /*
 0    1    2    3    4    5    6    7    8    9   10
