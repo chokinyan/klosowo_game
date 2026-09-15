@@ -1,0 +1,6 @@
+#ifndef KLOSOWO_NETWORK_H
+#define KLOSOWO_NETWORK_H
+
+
+
+#endif // KLOSOWO_NETWORK_H
