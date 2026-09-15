@@ -6,6 +6,7 @@
 #include "window/ui_grid.h"
 #include "game/board.h"
 #include "game/player/movement.h"
+#include "log/log.h"
 #include "network/client.h"
 #include "network/server.h"
 #include "types/types.h"
@@ -120,9 +121,20 @@ void cell_on_click( GtkGestureClick *gesture, int n_press, double x, double y, g
 
         if ( current_tour < 2 ) // Place barrier phase
         {
-            if ( is_client )
+            if ( is_client && is_connected )
             {
-                network_send_move( ( Position ){ .x = 0, .y = 0 }, ( Position ){ .x = row, .y = col } );
+                int result = network_send_move( ( Position ){ .x = 0, .y = 0 }, ( Position ){ .x = row, .y = col } );
+                if ( result == 0 )
+                {
+                    log_error( "Erreur lors de l'envoi du message au serveur.\n" );
+                }
+                else
+                {
+                    place_barrer( ( Position ){ .x = row, .y = col }, current_team );
+                    current_tour++;
+                    log_debug( "Message envoyé au serveur : %d.%d\n", row, col );
+                }
+
                 return;
             }
             if ( place_barrer( ( Position ){ .x = row, .y = col }, current_team ) )
@@ -139,9 +151,23 @@ void cell_on_click( GtkGestureClick *gesture, int n_press, double x, double y, g
             Position start = { .x = is_pawn_selected.position.x, .y = is_pawn_selected.position.y };
             Position end = { .x = row, .y = col };
 
-            if ( is_client )
+            if ( is_client && is_connected )
             {
-                network_send_move( start, end );
+                int result = network_send_move( start, end );
+                if ( result == 0 )
+                {
+                    log_error( "Erreur lors de l'envoi du message au serveur.\n" );
+                }
+                else
+                {
+                    game_board[start.x][start.y].is_selected = false;
+                    game_board[end.x][end.y].is_selected = false;
+                    is_pawn_selected.is_selected = false;
+
+                    current_tour++;
+
+                    current_team = ( current_team == RED ) ? BLUE : RED;
+                }
                 return;
             }
 

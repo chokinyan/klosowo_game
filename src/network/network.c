@@ -12,6 +12,7 @@
 // Variable globale pour garder en memoire le tuyau de
 // connexion (la socket)
 short sock_fd = -1;
+bool is_connected = false;
 
 int network_init( int is_server, const char *ip, int port )
 {
@@ -31,7 +32,7 @@ int network_init( int is_server, const char *ip, int port )
 
         init_client( ip, addr );
     }
-
+    is_connected = true;
     return 1; // La connexion est reussie !
 }
 

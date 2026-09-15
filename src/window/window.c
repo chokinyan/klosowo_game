@@ -1,4 +1,5 @@
 #include "window/window.h"
+#include "types/types.h"
 #include "window/ui_grid.h"
 
 void init_game_window( GtkWidget *window, WINDOW_TYPE window_type )
@@ -40,8 +41,11 @@ void init_game_window( GtkWidget *window, WINDOW_TYPE window_type )
 
 void init_game_board( GtkWidget *window )
 {
+
     GtkWidget *area;
     GtkGesture *click;
+
+    TeamsColor my_color = is_server ? RED : BLUE;
 
     area = gtk_drawing_area_new();
 
@@ -49,6 +53,10 @@ void init_game_board( GtkWidget *window )
 
     click = gtk_gesture_click_new();
     g_signal_connect( click, "pressed", G_CALLBACK( cell_on_click ), area );
+    if ( is_server )
+        g_io_add_watch( g_io_channel_unix_new( sock_fd ), G_IO_IN, on_network_data, area );
+    else if ( is_client )
+        g_io_add_watch( g_io_channel_unix_new( sock_fd ), G_IO_IN, on_network_data, area );
     gtk_widget_add_controller( area, GTK_EVENT_CONTROLLER( click ) );
 
     gtk_window_set_child( GTK_WINDOW( window ), area );
