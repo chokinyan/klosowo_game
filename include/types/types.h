@@ -8,7 +8,7 @@
 #define BOARD_ROWS 7
 #define BOARD_COLS 11
 
-#define MAX_TOUR 64
+#define MAX_TOUR 66
 
 extern bool game_ended;
 extern int current_tour;

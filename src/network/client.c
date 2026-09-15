@@ -1,10 +1,11 @@
 #include "network/client.h"
-#include "log/log.h"
 #include "network/network.h"
 #include <arpa/inet.h>
+#include <stdio.h>
+#include <string.h>
 #include <unistd.h>
 
-bool init_client( short sock_fd, const char *ip, struct sockaddr_in addr )
+bool init_client( const char *ip, struct sockaddr_in addr )
 {
     // 1. On cree la socket du client
     sock_fd = socket( AF_INET, SOCK_STREAM, 0 );
@@ -25,11 +26,26 @@ bool init_client( short sock_fd, const char *ip, struct sockaddr_in addr )
     return 1;
 }
 
-int network_send_barricade( int x, int y )
+int network_send( const char *msg )
 {
-    char message[20];
-    // On transforme les nombres X et Y en texte du style
-    // "X,Y"
-    log_debug( message, "%d,%d", x, y );
+    if ( sock_fd < 0 )
+        return 0;
+
+    // On calcule la taille du message et on l'envoie sur le
+    // reseau
+    int len = strlen( msg );
+    if ( send( sock_fd, msg, len, 0 ) <= 0 )
+    {
+        return 0; // Erreur pendant l'envoi
+    }
+    return 1; // Envoi reussi
+}
+
+int network_send_move( Position start, Position end )
+{
+    char message[30];
+    // On transforme les 4 coordonnees en texte du style
+    // "X1,Y1,X2,Y2"
+    sprintf( message, "%d,%d,%d,%d", start.x, start.y, end.x, end.y );
     return network_send( message );
 }

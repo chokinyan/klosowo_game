@@ -3,13 +3,9 @@
 
 #include <stdbool.h>
 
+static short sock_fd;
+
 int network_init( int is_server, const char *ip, int port );
-
-int network_send( const char *msg );
-
-int network_receive( char *buffer, int max_len );
-
-int network_send_move( int x1, int y1, int x2, int y2 );
 
 void network_close( void );
 

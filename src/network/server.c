@@ -1,7 +1,9 @@
 #include "network/server.h"
+#include "network/network.h"
+#include <string.h>
 #include <unistd.h>
 
-bool init_server( short sock_fd, struct sockaddr_in addr )
+bool init_server( struct sockaddr_in addr )
 {
     int listen_fd = socket( AF_INET, SOCK_STREAM, 0 );
     if ( listen_fd < 0 )
@@ -34,4 +36,23 @@ bool init_server( short sock_fd, struct sockaddr_in addr )
     if ( sock_fd < 0 )
         return 0;
     return 1;
+}
+
+bool network_receive( char *buffer, int max_len )
+{
+    if ( sock_fd < 0 )
+        return 0;
+
+    // On vide le tableau avant de lire
+    memset( buffer, 0, max_len );
+
+    // On attend de recevoir des octets venant du reseau
+    int bytes = recv( sock_fd, buffer, max_len - 1, 0 );
+    if ( bytes <= 0 )
+    {
+        return 0; // Erreur ou deconnexion
+    }
+
+    buffer[bytes] = '\0'; // On rajoute la fin de chaine
+    return bytes;
 }
