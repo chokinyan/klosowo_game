@@ -39,17 +39,17 @@ void setup_board()
     is_pawn_selected.position.y = 0;
     is_pawn_selected.is_selected = false;
 
-    diagonal_pos[0] = ( Position ){ .x = 10, .y = 0 };
-    diagonal_pos[1] = ( Position ){ .x = 9, .y = 1 };
-    diagonal_pos[2] = ( Position ){ .x = 8, .y = 2 };
-    diagonal_pos[3] = ( Position ){ .x = 7, .y = 3 };
-    diagonal_pos[4] = ( Position ){ .x = 6, .y = 4 };
-    diagonal_pos[5] = ( Position ){ .x = 5, .y = 5 };
-    diagonal_pos[6] = ( Position ){ .x = 4, .y = 6 };
-    diagonal_pos[7] = ( Position ){ .x = 3, .y = 7 };
-    diagonal_pos[8] = ( Position ){ .x = 2, .y = 8 };
-    diagonal_pos[9] = ( Position ){ .x = 1, .y = 9 };
-    diagonal_pos[10] = ( Position ){ .x = 0, .y = 10 };
+    diagonal_pos[0] = ( Position ){ .x = 0, .y = 8 };
+    diagonal_pos[1] = ( Position ){ .x = 0, .y = 9 };
+    diagonal_pos[2] = ( Position ){ .x = 0, .y = 10 };
+    diagonal_pos[3] = ( Position ){ .x = 1, .y = 7 };
+    diagonal_pos[4] = ( Position ){ .x = 2, .y = 6 };
+    diagonal_pos[5] = ( Position ){ .x = 3, .y = 5 };
+    diagonal_pos[6] = ( Position ){ .x = 4, .y = 4 };
+    diagonal_pos[7] = ( Position ){ .x = 5, .y = 3 };
+    diagonal_pos[8] = ( Position ){ .x = 6, .y = 0 };
+    diagonal_pos[9] = ( Position ){ .x = 6, .y = 1 };
+    diagonal_pos[10] = ( Position ){ .x = 6, .y = 2 };
 
     // Set up the blue team
     game_board[0][0].type = BLUE_CAMP; // Blue camp

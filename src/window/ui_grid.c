@@ -86,7 +86,7 @@ void cell_on_click( GtkGestureClick *gesture, int n_press, double x, double y, g
     int col = (int)( x / cell_width );
     int row = (int)( y / cell_height );
 
-    if ( row >= 0 && row < BOARD_ROWS && col >= 0 && col < BOARD_COLS )
+    if ( row >= 0 && row < BOARD_ROWS && col >= 0 && col < BOARD_COLS && !game_ended )
     {
         if ( is_pawn_selected.is_selected )
         {
@@ -99,6 +99,7 @@ void cell_on_click( GtkGestureClick *gesture, int n_press, double x, double y, g
                 is_pawn_selected.position.x = 0;
                 is_pawn_selected.position.y = 0;
                 is_pawn_selected.is_selected = false;
+                game_board[start.x][start.y].is_selected = false;
 
                 current_tour++;
 
@@ -109,6 +110,7 @@ void cell_on_click( GtkGestureClick *gesture, int n_press, double x, double y, g
         if ( is_the_team( current_team, ( Position ){ .x = row, .y = col } ) )
         {
             g_print( "row : %i / col : %i\n", row, col );
+            game_board[row][col].is_selected = true;
             is_pawn_selected.position.x = row;
             is_pawn_selected.position.y = col;
             is_pawn_selected.is_selected = true;
