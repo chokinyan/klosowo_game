@@ -10,7 +10,7 @@
 
 // Variable globale pour garder en memoire le tuyau de
 // connexion (la socket)
-static short sock_fd = -1;
+short sock_fd = -1;
 
 int network_init( int is_server, const char *ip, int port )
 {
@@ -56,7 +56,7 @@ bool check_good_format( int max_len )
 
     // Vérification du format avec une expression régulière
     regex_t regex;
-    const char *pattern_barricade = "^(0\\.0|6\\.10),[0-6]\\.[0-10]"; // Format attendu pour les barricades
+    const char *pattern_barricade = "^(0\\.0|6\\.10),[0-6]\\.(10|[0-9])"; // Format attendu pour les barricades
     int verf_bar = regcomp( &regex, pattern_barricade, 0 );
     verf_bar = regexec( &regex, recvbuffer, 0, NULL, 0 );
     if ( verf_bar == 0 )
@@ -64,7 +64,7 @@ bool check_good_format( int max_len )
         return true; // Format correct pour les barricades
     }
 
-    const char *pattern_move = "^[0-10]\\.[0-6]\\.[0-10],[0-6]\\.[0-10]"; // Format attendu pour les mouvements
+    const char *pattern_move = "^(10|[0-9])\\.[0-6]\\,(10|[0-9])\\.(10|[0-9])"; // Format attendu pour les mouvements
     int verf_move = regcomp( &regex, pattern_move, 0 );
     verf_move = regexec( &regex, recvbuffer, 0, NULL, 0 );
     if ( verf_move == 0 )

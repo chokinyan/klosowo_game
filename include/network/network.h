@@ -3,7 +3,7 @@
 
 #include <stdbool.h>
 
-static short sock_fd;
+extern short sock_fd;
 
 int network_init( int is_server, const char *ip, int port );
 
