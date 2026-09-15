@@ -115,6 +115,18 @@ void cell_on_click( GtkGestureClick *gesture, int n_press, double x, double y, g
 
     if ( row >= 0 && row < BOARD_ROWS && col >= 0 && col < BOARD_COLS && !game_ended )
     {
+
+        if ( current_tour < 2 ) // Place barrier phase
+        {
+            if ( place_barrer( ( Position ){ .x = row, .y = col }, current_team ) )
+            {
+                current_tour++;
+                current_team = ( current_team == RED ) ? BLUE : RED;
+            }
+            gtk_widget_queue_draw( area );
+            return;
+        }
+
         if ( is_pawn_selected.is_selected )
         {
             Position start = { .x = is_pawn_selected.position.x, .y = is_pawn_selected.position.y };

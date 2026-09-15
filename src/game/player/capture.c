@@ -12,7 +12,7 @@ bool seultout( Position start, Position end, TeamsColor pawn_team )
         if ( is_out_of_bound( end ) ) // Check out of bound for next cell
             return false;
 
-        if ( is_nothing_in_cell( end ) ) // Check if there a pawn
+        if ( !check_pawn_is_enemy( pawn_team, game_board[end.x][end.y] ) ) // Check if there a enemy pawn
             return false;
 
         end.x += step;
@@ -35,13 +35,13 @@ bool seultout( Position start, Position end, TeamsColor pawn_team )
     }
     else // Check for y
     {
-        short step = start.y > end.y ? 1 : -1;
+        short step = start.y < end.y ? 1 : -1;
 
         end.y += step;
         if ( is_out_of_bound( end ) ) // Check out of bound for next cell
             return false;
 
-        if ( is_nothing_in_cell( end ) ) // Check if there a pawn
+        if ( !check_pawn_is_enemy( pawn_team, game_board[end.x][end.y] ) ) // Check if there a enemy pawn
             return false;
 
         end.y += step;
