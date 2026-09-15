@@ -11,11 +11,7 @@ bool moove_player( Position start, Position end, TeamsColor pawn_team )
     if ( !is_movement_possible( start, end ) )
         return false;
 
-    if ( is_conquete( start, end ) )
-    {
-        game_ended = true;
-        return true;
-    }
+    is_conquete( start, end );
 
     if ( game_board[end.x][end.y].type == RED_CAMP || game_board[end.x][end.y].type == BLUE_CAMP )
     {
@@ -96,9 +92,19 @@ bool is_conquete( Position start, Position end )
         {
 
         case RED_KING:
-            return game_board[end.x][end.y].type != RED_CAMP;
+            if ( game_board[end.x][end.y].type == BLUE_CAMP )
+            {
+                end_game( RED );
+                return true;
+            }
+            return false;
         case BLUE_KING:
-            return game_board[end.x][end.y].type != BLUE_CAMP;
+            if ( game_board[end.x][end.y].type == RED_CAMP )
+            {
+                end_game( BLUE );
+                return true;
+            }
+            return false;
         default:
             return false;
         }

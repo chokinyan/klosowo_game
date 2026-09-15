@@ -87,6 +87,8 @@ typedef struct SelectedPawn
     bool is_selected;
 } SelectedPawn;
 
+extern Position diagonal_pos[11];
+
 extern TeamsColor current_team;
 extern SelectedPawn is_pawn_selected;
 extern BoardCell game_board[BOARD_ROWS][BOARD_COLS];

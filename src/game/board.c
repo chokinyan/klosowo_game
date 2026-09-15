@@ -6,6 +6,23 @@ BoardCell game_board[BOARD_ROWS][BOARD_COLS];
 int current_tour;
 TeamsColor current_team;
 bool game_ended;
+SelectedPawn is_pawn_selected;
+Position diagonal_pos[11];
+
+/*
+0    1    2    3    4    5    6    7    8    9   10
+ -----------------------------------------------------
+0  |  CB   .    TB   TB   .    .    .    .    J    J    J   |
+1  |  .    RB   TB   TB   .    .    .    J    .    .    .   |
+2  |  TB   TB   TB   .    .    .    J    .    .    .    .   |
+3  |  TB   TB   .    .    .    J    .    .    .    TR   TR  |
+4  |  .    .    .    .    J    .    .    .    TR   TR   TR  |
+5  |  .    .    .    J    .    .    .    TR   TR   RR   .   |
+6  |  J    J    J    .    .    .    .    TR   TR   .    CR  |
+ -----------------------------------------------------
+
+
+*/
 
 /**
  * @brief Setup the board with initial values
@@ -17,6 +34,22 @@ void setup_board()
     current_team = BLUE;
     current_tour = 0;
     game_ended = false;
+
+    is_pawn_selected.position.x = 0;
+    is_pawn_selected.position.y = 0;
+    is_pawn_selected.is_selected = false;
+
+    diagonal_pos[0] = ( Position ){ .x = 10, .y = 0 };
+    diagonal_pos[1] = ( Position ){ .x = 9, .y = 1 };
+    diagonal_pos[2] = ( Position ){ .x = 8, .y = 2 };
+    diagonal_pos[3] = ( Position ){ .x = 7, .y = 3 };
+    diagonal_pos[4] = ( Position ){ .x = 6, .y = 4 };
+    diagonal_pos[5] = ( Position ){ .x = 5, .y = 5 };
+    diagonal_pos[6] = ( Position ){ .x = 4, .y = 6 };
+    diagonal_pos[7] = ( Position ){ .x = 3, .y = 7 };
+    diagonal_pos[8] = ( Position ){ .x = 2, .y = 8 };
+    diagonal_pos[9] = ( Position ){ .x = 1, .y = 9 };
+    diagonal_pos[10] = ( Position ){ .x = 0, .y = 10 };
 
     // Set up the blue team
     game_board[0][0].type = BLUE_CAMP; // Blue camp
@@ -73,19 +106,16 @@ bool is_nothing_in_cell( Position pos )
 
 bool is_diagonal( Position pos )
 {
-    if ( is_out_of_bound( pos ) )
-        return false;
 
-    int extra = BOARD_COLS - BOARD_ROWS;         // Check more size of the rectangle to make a square
-    int offset = ( BOARD_ROWS - 1 ) + extra / 2; // Offset to make a square
+    for ( short i = 0; i < 11; i++ )
+    {
+        if ( diagonal_pos[i].x == pos.x && diagonal_pos[i].y == pos.y )
+        {
+            return true;
+        }
+    }
 
-    int expected_row = offset - pos.y;
-    if ( expected_row < 0 )
-        expected_row = 0;
-    if ( expected_row >= BOARD_ROWS )
-        expected_row = BOARD_ROWS - 1;
-
-    return expected_row == pos.x;
+    return false;
 }
 
 bool is_own_side( TeamsColor team, Position pos )

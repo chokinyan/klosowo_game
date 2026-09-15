@@ -48,6 +48,10 @@ void draw_bord( GtkDrawingArea *drawing_area, cairo_t *cairo, int width, int hei
             {
                 cairo_set_source_rgba( cairo, 0, 1, 0, 0.7 );
             }
+            if ( is_diagonal( ( Position ){ .x = row, .y = col } ) && game_board[row][col].type == EMPTY )
+            {
+                cairo_set_source_rgba( cairo, 1.0, 1.0, 0.0, 0.7 );
+            }
             cairo_rectangle( cairo, col * cell_width, row * cell_height, cell_width, cell_height );
             cairo_fill( cairo );
         }
@@ -111,7 +115,33 @@ void cell_on_click( GtkGestureClick *gesture, int n_press, double x, double y, g
         }
         if ( current_tour >= MAX_TOUR )
         {
-            end_game( current_team );
+            short blue_point = 0;
+            short red_point = 0;
+
+            for ( int i = 0; i < BOARD_ROWS; i++ )
+            {
+                for ( int j = 0; j < BOARD_COLS; j++ )
+                {
+                    if ( game_board[i][j].type == RED_TEAM )
+                    {
+                        red_point++;
+                    }
+                    else if ( game_board[i][j].type == BLUE_TEAM )
+                    {
+                        blue_point++;
+                    }
+
+                    if ( game_board[i][j].pawn == RED_SOLDIER )
+                    {
+                        red_point++;
+                    }
+                    else if ( game_board[i][j].pawn == BLUE_SOLDIER )
+                    {
+                        blue_point++;
+                    }
+                }
+            }
+            end_game( red_point > blue_point ? RED : BLUE );
         }
     }
 }

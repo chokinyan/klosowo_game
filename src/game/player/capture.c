@@ -142,7 +142,7 @@ bool capture( Position target_position )
 
     if ( target.pawn == RED_KING || target.pawn == BLUE_KING )
     {
-        game_ended = true;
+        end_game( target.pawn == RED_KING ? BLUE : RED );
         return true;
     }
 
