@@ -25,6 +25,12 @@ void draw_board( GtkDrawingArea *drawing_area, cairo_t *cairo, int width, int he
             {
             case RED_TEAM:
                 cairo_set_source_rgba( cairo, 1, 0, 0, 1.0 );
+                if ( cell.pawn != NULL_PAWN )
+                {
+                    cairo_arc( cairo, ( col * cell_width ) + ( cell_width / 2 ),
+                               ( row * cell_height ) + ( cell_height / 2 ), 10, 0, 2 * G_PI );
+                    cairo_stroke_preserve( cairo );
+                }
                 if ( cell.pawn == RED_KING )
                 {
                     cairo_arc( cairo, ( col * cell_width ) + ( cell_width / 2 ),
@@ -32,9 +38,6 @@ void draw_board( GtkDrawingArea *drawing_area, cairo_t *cairo, int width, int he
                     cairo_fill_preserve( cairo );
                     cairo_stroke_preserve( cairo );
                 }
-                cairo_arc( cairo, ( col * cell_width ) + ( cell_width / 2 ),
-                           ( row * cell_height ) + ( cell_height / 2 ), 10, 0, 2 * G_PI );
-                cairo_stroke_preserve( cairo );
                 cairo_set_source_rgba( cairo, 1, 0, 0, 0.4 );
                 break;
 
@@ -46,6 +49,12 @@ void draw_board( GtkDrawingArea *drawing_area, cairo_t *cairo, int width, int he
                 break;
             case BLUE_TEAM:
                 cairo_set_source_rgba( cairo, 0, 0, 1, 1.0 );
+                if ( cell.pawn != NULL_PAWN )
+                {
+                    cairo_arc( cairo, ( col * cell_width ) + ( cell_width / 2 ),
+                               ( row * cell_height ) + ( cell_height / 2 ), 10, 0, 2 * G_PI );
+                    cairo_stroke_preserve( cairo );
+                }
                 if ( cell.pawn == BLUE_KING )
                 {
                     cairo_arc( cairo, ( col * cell_width ) + ( cell_width / 2 ),
@@ -53,9 +62,7 @@ void draw_board( GtkDrawingArea *drawing_area, cairo_t *cairo, int width, int he
                     cairo_fill_preserve( cairo );
                     cairo_stroke_preserve( cairo );
                 }
-                cairo_arc( cairo, ( col * cell_width ) + ( cell_width / 2 ),
-                           ( row * cell_height ) + ( cell_height / 2 ), 10, 0, 2 * G_PI );
-                cairo_stroke_preserve( cairo );
+
                 cairo_set_source_rgba( cairo, 0, 0, 1, 0.4 );
                 break;
             case BARRER:

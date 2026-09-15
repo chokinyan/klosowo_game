@@ -7,13 +7,12 @@ bool seultout( Position start, Position end, TeamsColor pawn_team )
 
     if ( start.x != end.x ) // Check for x
     {
-        short step = start.x > end.x ? 1 : -1;
+        short step = start.x < end.x ? 1 : -1;
         end.x += step;
         if ( is_out_of_bound( end ) ) // Check out of bound for next cell
             return false;
 
-        if ( is_nothing_in_cell( end ) || game_board[end.x][end.y].type == BARRER ||
-             check_pawn_is_mate( pawn_team, game_board[end.x][end.y] ) ) // Check if there a pawn
+        if ( is_nothing_in_cell( end ) ) // Check if there a pawn
             return false;
 
         end.x += step;
@@ -26,8 +25,7 @@ bool seultout( Position start, Position end, TeamsColor pawn_team )
             return true;
         }
 
-        if ( is_nothing_in_cell( end ) && game_board[end.x][end.y].type != BARRER &&
-             check_pawn_is_mate( pawn_team, game_board[end.x][end.y] ) ) // Check if there a pawn
+        if ( is_nothing_in_cell( end ) ) // Check if there a pawn
         {
 
             capture( ( Position ){ .x = end.x - step, .y = end.y } );
@@ -43,8 +41,7 @@ bool seultout( Position start, Position end, TeamsColor pawn_team )
         if ( is_out_of_bound( end ) ) // Check out of bound for next cell
             return false;
 
-        if ( is_nothing_in_cell( end ) || game_board[end.x][end.y].type == BARRER ||
-             check_pawn_is_mate( pawn_team, game_board[end.x][end.y] ) ) // Check if there a pawn
+        if ( is_nothing_in_cell( end ) ) // Check if there a pawn
             return false;
 
         end.y += step;
@@ -56,8 +53,7 @@ bool seultout( Position start, Position end, TeamsColor pawn_team )
             return true;
         } // Check out of bound for next cell
 
-        if ( is_nothing_in_cell( end ) && game_board[end.x][end.y].type != BARRER &&
-             check_pawn_is_mate( pawn_team, game_board[end.x][end.y] ) )
+        if ( is_nothing_in_cell( end ) )
         {
             capture( ( Position ){ .x = end.x, .y = end.y - step } );
             return true;
