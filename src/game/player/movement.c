@@ -66,7 +66,7 @@ bool is_movement_possible( Position start, Position end )
     return true;
 }
 
-bool place_barrer( Position pos, TeamsColor team )
+bool place_barrer( Position pos)
 {
     if ( is_out_of_bound( pos ) )
         return false;
@@ -74,8 +74,8 @@ bool place_barrer( Position pos, TeamsColor team )
     if ( game_board[pos.x][pos.y].type == RED_CAMP || game_board[pos.x][pos.y].type == BLUE_CAMP )
         return false;
 
-    if ( !is_own_side( team, pos ) || is_diagonal( pos ) || is_player_around( pos ) )
-        return false;
+    //if ( !is_own_side( team, pos ) || is_diagonal( pos ) || is_player_around( pos ) )
+    //    return false;
 
     game_board[pos.x][pos.y].type = BARRER;
 

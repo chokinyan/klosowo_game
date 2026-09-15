@@ -35,7 +35,7 @@ bool is_position_accessible( Position start, Position end );
  */
 bool is_movement_possible( Position start, Position end );
 
-bool place_barrer( Position pos, TeamsColor team );
+bool place_barrer( Position pos);
 
 bool is_conquete( Position start,Position end );
 

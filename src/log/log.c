@@ -6,6 +6,8 @@
 #include <string.h>
 #include <time.h>
 
+static void base_logv( LogError log_level, const char *fmt, va_list args );
+
 void log_movement_pawn( Position start, Position end, int team )
 {
     char *color;
@@ -41,15 +43,45 @@ void log_eating_pawn( TeamsColor eater_team )
               eater_name );
 }
 
-void console_log( const char *fmt, ... ) { base_log( BASELOG, fmt ); }
+void console_log( const char *fmt, ... )
+{
+    va_list args;
+    va_start( args, fmt );
+    base_logv( BASELOG, fmt, args );
+    va_end( args );
+}
 
-void log_info( const char *fmt, ... ) { base_log( LOG, fmt ); }
+void log_info( const char *fmt, ... )
+{
+    va_list args;
+    va_start( args, fmt );
+    base_logv( LOG, fmt, args );
+    va_end( args );
+}
 
-void log_debug( const char *fmt, ... ) { base_log( DEBUG, fmt ); }
+void log_debug( const char *fmt, ... )
+{
+    va_list args;
+    va_start( args, fmt );
+    base_logv( DEBUG, fmt, args );
+    va_end( args );
+}
 
-void log_warn( const char *fmt, ... ) { base_log( WARN, fmt ); }
+void log_warn( const char *fmt, ... )
+{
+    va_list args;
+    va_start( args, fmt );
+    base_logv( WARN, fmt, args );
+    va_end( args );
+}
 
-void log_error( const char *fmt, ... ) { base_log( ERROR, fmt ); }
+void log_error( const char *fmt, ... )
+{
+    va_list args;
+    va_start( args, fmt );
+    base_logv( ERROR, fmt, args );
+    va_end( args );
+}
 
 static void print_time()
 {
@@ -60,7 +92,7 @@ static void print_time()
     printf( "%s", buff );
 }
 
-static void base_log( LogError log_level, const char *fmt, ... )
+static void base_logv( LogError log_level, const char *fmt, va_list args )
 {
     char *log_stat;
     switch ( log_level )
@@ -87,13 +119,14 @@ static void base_log( LogError log_level, const char *fmt, ... )
 
     print_time();
     printf( "%s", log_stat );
+    vprintf( fmt, args );
+    printf( ANSI_RESET "\n" );
+}
 
-    /* Permet de print les parmametre mis car on ne peut pas
-     passer par printf avec la list fmt comme fait */
+static void base_log( LogError log_level, const char *fmt, ... )
+{
     va_list args;
     va_start( args, fmt );
-    vprintf( fmt, args );
+    base_logv( log_level, fmt, args );
     va_end( args );
-
-    printf( ANSI_RESET "\n" );
 }

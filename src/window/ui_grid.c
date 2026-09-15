@@ -124,9 +124,19 @@ void cell_on_click( GtkGestureClick *gesture, int n_press, double x, double y, g
 
         if ( current_tour < 2 ) // Place barrier phase
         {
-            if ( is_client && is_connected )
+            if ( is_connected )
             {
-                int result = network_send_move( ( Position ){ .x = 0, .y = 0 }, ( Position ){ .x = row, .y = col } );
+                int result = 0;
+                if ( my_color == RED )
+                {
+                    result = network_send_move( ( Position ){ .x = 10, .y = 6 }, ( Position ){ .x = col, .y = row } );
+                    log_debug( "Placement d'un mur par le joueur rouge : %d.%d\n", row, col );
+                }
+                else if ( my_color == BLUE )
+                {
+                    result = network_send_move( ( Position ){ .x = 0, .y = 0 }, ( Position ){ .x = col, .y = row } );
+                    log_debug( "Placement d'un mur par le joueur bleu : %d.%d\n", row, col );
+                }
                 if ( result == 0 )
                 {
                     log_error( "Erreur lors de l'envoi du message au serveur.\n" );
@@ -138,6 +148,7 @@ void cell_on_click( GtkGestureClick *gesture, int n_press, double x, double y, g
                     current_team = ( current_team == RED ) ? BLUE : RED;
                     log_debug( "Message envoyé au serveur : %d.%d\n", row, col );
                 }
+                gtk_widget_queue_draw( area );
 
                 return;
             }
@@ -155,29 +166,19 @@ void cell_on_click( GtkGestureClick *gesture, int n_press, double x, double y, g
             Position start = { .x = is_pawn_selected.position.x, .y = is_pawn_selected.position.y };
             Position end = { .x = row, .y = col };
 
-            if ( is_client && is_connected )
-            {
-                int result = network_send_move( start, end );
-                if ( result == 0 )
-                {
-                    log_error( "Erreur lors de l'envoi du message au serveur.\n" );
-                }
-                else
-                {
-                    game_board[start.x][start.y].is_selected = false;
-                    game_board[end.x][end.y].is_selected = false;
-                    is_pawn_selected.is_selected = false;
-
-                    current_tour++;
-
-                    current_team = ( current_team == RED ) ? BLUE : RED;
-                }
-                return;
-            }
-
             if ( is_movement_possible( start, end ) )
                 if ( moove_player( start, end, current_team ) )
                 {
+                    if ( is_connected )
+                    {
+                        int result = network_send_move( ( Position ){ .x = start.y, .y = start.x },
+                                                        ( Position ){ .x = end.y, .y = end.x } );
+                        if ( result == 0 )
+                        {
+                            log_error( "Erreur lors de l'envoi du message au serveur.\n" );
+                        }
+                    }
+
                     game_board[start.x][start.y].is_selected = false;
                     game_board[end.x][end.y].is_selected = false;
                     is_pawn_selected.is_selected = false;
@@ -244,14 +245,32 @@ gboolean on_network_data( GIOChannel *source, GIOCondition condition, gpointer u
         return TRUE; // rien de valide recu, on continue quand meme a surveiller
 
     Position start, end;
-    if ( sscanf( buffer, "%hu.%hu,%hu.%hu", &start.x, &start.y, &end.x, &end.y ) != 4 )
+
+    log_debug( "Message reçu du réseau : %s\n", buffer );
+
+    if ( sscanf( buffer, "%hu.%hu,%hu.%hu", &start.y, &start.x, &end.y, &end.x ) != 4 )
+    {
+        gtk_widget_queue_draw( area );
         return TRUE; // format invalide, ignore
+    }
+
+    log_debug( "Move add : (%d,%d) -> (%d,%d)", start.x, start.y, end.x, end.y );
 
     if ( current_tour < 2 ) // Place barrier phase
     {
-        place_barrer( end, current_team );
+        if ( !place_barrer( end, current_team ) )
+        {
+            log_warn( "Impossible de placer un mur à la position (%d,%d) Avec l'équipe %s", end.x, end.y,
+                      current_team == RED ? "rouge" : "bleue" );
+            gtk_widget_queue_draw( area );
+
+            return TRUE; // failed to place barrier
+        }
         current_tour++;
         current_team = ( current_team == RED ) ? BLUE : RED;
+        gtk_widget_queue_draw( area );
+
+        return TRUE; // TRUE = continue a surveiller la socket
     }
 
     if ( moove_player( start, end, current_team ) )
