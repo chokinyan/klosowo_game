@@ -45,14 +45,8 @@ void network_close( void )
     }
 }
 
-bool check_good_format( int max_len )
+bool check_good_format( char *recvbuffer )
 {
-    char recvbuffer[30];
-    int bytes = recv( sock_fd, recvbuffer, max_len - 1, 0 );
-    if ( bytes <= 0 )
-    {
-        return false; // Erreur ou deconnexion
-    }
 
     // Vérification du format avec une expression régulière
     regex_t regex;

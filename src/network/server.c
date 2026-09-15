@@ -38,10 +38,11 @@ bool init_server( struct sockaddr_in addr )
     return 1;
 }
 
-bool network_receive( char *buffer, int max_len )
+int network_receive( char *buffer, int max_len )
 {
     if ( sock_fd < 0 )
         return 0;
+
 
     // On vide le tableau avant de lire
     memset( buffer, 0, max_len );
@@ -54,5 +55,13 @@ bool network_receive( char *buffer, int max_len )
     }
 
     buffer[bytes] = '\0'; // On rajoute la fin de chaine
+
+
+
+    if ( !check_good_format( buffer ) )
+    {
+        return 0; // Format incorrect
+    }
+
     return bytes;
 }

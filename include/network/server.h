@@ -6,7 +6,6 @@
 
 bool init_server( struct sockaddr_in addr );
 
-bool network_receive( char *buffer, int max_len );
-
+int network_receive( char *buffer, int max_len );
 
 #endif // KLOSOWO_NETWORK_SERVER_H

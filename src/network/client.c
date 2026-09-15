@@ -46,6 +46,6 @@ int network_send_move( Position start, Position end )
     char message[30];
     // On transforme les 4 coordonnees en texte du style
     // "X1,Y1,X2,Y2"
-    sprintf( message, "%d,%d,%d,%d", start.x, start.y, end.x, end.y );
+    sprintf( message, "%d.%d,%d.%d", start.x, start.y, end.x, end.y );
     return network_send( message );
 }
