@@ -55,11 +55,10 @@ int network_receive( char *buffer, int max_len )
     if ( opposent_ip == NULL )
         return 0;
 
-    
-
     // On vide le tableau avant de lire
     memset( buffer, 0, max_len );
 
+    
     // On attend de recevoir des octets venant du reseau
     int bytes = recv( sock_fd, buffer, max_len - 1, 0 );
     if ( bytes <= 0 )

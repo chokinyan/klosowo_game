@@ -15,4 +15,7 @@ void cell_on_click( GtkGestureClick *gesture, int n_press, double x, double y, g
  * x BOARD_COLS). */
 void draw_board( GtkDrawingArea *drawing_area, cairo_t *cairo, int width, int height, gpointer user_data );
 
+// ui_grid.h — ajoute la déclaration
+gboolean on_network_data( GIOChannel *source, GIOCondition condition, gpointer user_data );
+
 #endif

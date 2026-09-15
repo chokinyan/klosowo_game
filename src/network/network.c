@@ -51,7 +51,7 @@ bool check_good_format( char *recvbuffer )
     // Vérification du format avec une expression régulière
     regex_t regex;
     const char *pattern_barricade = "^(0\\.0|6\\.10),[0-6]\\.(10|[0-9])"; // Format attendu pour les barricades
-    int verf_bar = regcomp( &regex, pattern_barricade, 0 );
+    int verf_bar = regcomp( &regex, pattern_barricade, REG_EXTENDED );
     verf_bar = regexec( &regex, recvbuffer, 0, NULL, 0 );
     if ( verf_bar == 0 )
     {
@@ -59,7 +59,7 @@ bool check_good_format( char *recvbuffer )
     }
 
     const char *pattern_move = "^(10|[0-9])\\.[0-6]\\,(10|[0-9])\\.(10|[0-9])"; // Format attendu pour les mouvements
-    int verf_move = regcomp( &regex, pattern_move, 0 );
+    int verf_move = regcomp( &regex, pattern_move, REG_EXTENDED );
     verf_move = regexec( &regex, recvbuffer, 0, NULL, 0 );
     if ( verf_move == 0 )
     {

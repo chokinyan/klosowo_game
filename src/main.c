@@ -23,6 +23,17 @@ void activate( GtkApplication *app )
 int main( int argc, char **argv )
 {
 
+    GtkApplication *app;
+    int status;
+
+    setup_board();
+
+    app = gtk_application_new( "org.gtk.example", G_APPLICATION_DEFAULT_FLAGS );
+    g_signal_connect( app, "activate", G_CALLBACK( activate ), NULL );
+
+    status = g_application_run( G_APPLICATION( app ), argc, argv );
+    g_object_unref( app );
+
     regex_t regex;
     const char *pattern_server = "^[0-9]{1,5}$"; // Format attendu pour le port
     const char *pattern_client_connect =
@@ -30,10 +41,11 @@ int main( int argc, char **argv )
 
     for ( int i = 1; i < argc; i++ )
     {
-        int verf_client = regcomp( &regex, pattern_client_connect, 0 );
+        int verf_client = regcomp( &regex, pattern_client_connect, REG_EXTENDED );
         verf_client = regexec( &regex, argv[i], 0, NULL, 0 );
         if ( verf_client == 0 )
         {
+            ip_address = argv[i];
             char *colon = strrchr( ip_address, ':' );
             if ( colon != NULL )
             {
@@ -43,7 +55,7 @@ int main( int argc, char **argv )
             ip_address = argv[i];
             continue;
         }
-        int verf_port = regcomp( &regex, pattern_server, 0 );
+        int verf_port = regcomp( &regex, pattern_server, REG_EXTENDED );
         verf_port = regexec( &regex, argv[i], 0, NULL, 0 );
         if ( verf_port == 0 )
         {
@@ -76,17 +88,6 @@ int main( int argc, char **argv )
         g_print( "Connexion au serveur %s sur le port %d...\n", ip_address, port );
         network_init( 0, ip_address, port );
     }
-
-    GtkApplication *app;
-    int status;
-
-    setup_board();
-
-    app = gtk_application_new( "org.gtk.example", G_APPLICATION_DEFAULT_FLAGS );
-    g_signal_connect( app, "activate", G_CALLBACK( activate ), NULL );
-
-    status = g_application_run( G_APPLICATION( app ), argc, argv );
-    g_object_unref( app );
 
     return status;
 }

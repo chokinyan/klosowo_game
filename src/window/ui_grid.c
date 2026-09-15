@@ -6,6 +6,8 @@
 #include "window/ui_grid.h"
 #include "game/board.h"
 #include "game/player/movement.h"
+#include "network/client.h"
+#include "network/server.h"
 #include "types/types.h"
 
 void draw_board( GtkDrawingArea *drawing_area, cairo_t *cairo, int width, int height, gpointer user_data )
@@ -118,6 +120,11 @@ void cell_on_click( GtkGestureClick *gesture, int n_press, double x, double y, g
 
         if ( current_tour < 2 ) // Place barrier phase
         {
+            if ( is_client )
+            {
+                network_send_move( ( Position ){ .x = 0, .y = 0 }, ( Position ){ .x = row, .y = col } );
+                return;
+            }
             if ( place_barrer( ( Position ){ .x = row, .y = col }, current_team ) )
             {
                 current_tour++;
@@ -131,6 +138,12 @@ void cell_on_click( GtkGestureClick *gesture, int n_press, double x, double y, g
         {
             Position start = { .x = is_pawn_selected.position.x, .y = is_pawn_selected.position.y };
             Position end = { .x = row, .y = col };
+
+            if ( is_client )
+            {
+                network_send_move( start, end );
+                return;
+            }
 
             if ( is_movement_possible( start, end ) )
                 if ( moove_player( start, end, current_team ) )
@@ -186,4 +199,31 @@ void cell_on_click( GtkGestureClick *gesture, int n_press, double x, double y, g
     }
 
     gtk_widget_queue_draw( area );
+}
+
+// ui_grid.c — ajoute l'implémentation, et #include "network/network.h" en haut
+gboolean on_network_data( GIOChannel *source, GIOCondition condition, gpointer user_data )
+{
+    (void)source;
+    (void)condition;
+    GtkWidget *area = GTK_WIDGET( user_data );
+
+    char buffer[30];
+    int bytes = network_receive( buffer, sizeof( buffer ) );
+    if ( bytes <= 0 )
+        return TRUE; // rien de valide recu, on continue quand meme a surveiller
+
+    Position start, end;
+    if ( sscanf( buffer, "%hu.%hu,%hu.%hu", &start.x, &start.y, &end.x, &end.y ) != 4 )
+        return TRUE; // format invalide, ignore
+
+    if ( moove_player( start, end, current_team ) )
+    {
+        game_board[start.x][start.y].is_selected = false;
+        current_tour++;
+        current_team = ( current_team == RED ) ? BLUE : RED;
+    }
+
+    gtk_widget_queue_draw( area );
+    return TRUE; // TRUE = continue a surveiller la socket
 }
