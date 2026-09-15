@@ -95,6 +95,10 @@ void cell_on_click( GtkGestureClick *gesture, int n_press, double x, double y, g
                 is_pawn_selected.position.x = 0;
                 is_pawn_selected.position.y = 0;
                 is_pawn_selected.is_selected = false;
+
+                current_tour++;
+
+                current_team = ( current_team == RED ) ? BLUE : RED;
             }
         }
 
@@ -104,6 +108,10 @@ void cell_on_click( GtkGestureClick *gesture, int n_press, double x, double y, g
             is_pawn_selected.position.x = row;
             is_pawn_selected.position.y = col;
             is_pawn_selected.is_selected = true;
+        }
+        if ( current_tour >= MAX_TOUR )
+        {
+            end_game( current_team );
         }
     }
 }

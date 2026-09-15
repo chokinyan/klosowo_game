@@ -43,8 +43,8 @@ bool seultout( Position start, Position end, TeamsColor pawn_team )
         if ( is_out_of_bound( end ) ) // Check out of bound for next cell
             return false;
 
-        if ( is_nothing_in_cell( end ) || game_board[end.y][end.x].type == BARRER ||
-             check_pawn_is_mate( pawn_team, game_board[end.y][end.x] ) ) // Check if there a pawn
+        if ( is_nothing_in_cell( end ) || game_board[end.x][end.y].type == BARRER ||
+             check_pawn_is_mate( pawn_team, game_board[end.x][end.y] ) ) // Check if there a pawn
             return false;
 
         end.y += step;
@@ -52,14 +52,14 @@ bool seultout( Position start, Position end, TeamsColor pawn_team )
         if ( is_out_of_bound( end ) )
         {
 
-            capture( ( Position ){ .x = end.x - step, .y = end.y } );
+            capture( ( Position ){ .x = end.x, .y = end.y - step } );
             return true;
         } // Check out of bound for next cell
 
         if ( is_nothing_in_cell( end ) && game_board[end.x][end.y].type != BARRER &&
              check_pawn_is_mate( pawn_team, game_board[end.x][end.y] ) )
         {
-            capture( ( Position ){ .x = end.x - step, .y = end.y } );
+            capture( ( Position ){ .x = end.x, .y = end.y - step } );
             return true;
         } // Check if there no pawn
     }
@@ -69,7 +69,8 @@ bool seultout( Position start, Position end, TeamsColor pawn_team )
 
 bool linca( Position pos, TeamsColor pawn_team )
 {
-    Position kill_pawn_position[4] = { 0 };
+    Position kill_pawn_position[4] = { { 0, 0 }, { 0, 0 }, { 0, 0 }, { 0, 0 } };
+    bool kill_pawn_found[4] = { false, false, false, false };
 
     // Start Check for x up
     if ( !is_out_of_bound( ( Position ){ .x = pos.x + 1, .y = pos.y } ) &&
@@ -79,6 +80,7 @@ bool linca( Position pos, TeamsColor pawn_team )
              check_pawn_is_mate( pawn_team, game_board[pos.x + 2][pos.y] ) )
         {
             kill_pawn_position[0] = ( Position ){ .x = pos.x + 1, .y = pos.y };
+            kill_pawn_found[0] = true;
         }
     }
     // End checking for x up
@@ -91,6 +93,7 @@ bool linca( Position pos, TeamsColor pawn_team )
              check_pawn_is_mate( pawn_team, game_board[pos.x - 2][pos.y] ) )
         {
             kill_pawn_position[1] = ( Position ){ .x = pos.x - 1, .y = pos.y };
+            kill_pawn_found[1] = true;
         }
     }
     // End checking for x down
@@ -103,6 +106,7 @@ bool linca( Position pos, TeamsColor pawn_team )
              check_pawn_is_mate( pawn_team, game_board[pos.x][pos.y + 2] ) )
         {
             kill_pawn_position[2] = ( Position ){ .x = pos.x, .y = pos.y + 1 };
+            kill_pawn_found[2] = true;
         }
     }
     // End checking for y up
@@ -115,13 +119,14 @@ bool linca( Position pos, TeamsColor pawn_team )
              check_pawn_is_mate( pawn_team, game_board[pos.x][pos.y - 2] ) )
         {
             kill_pawn_position[3] = ( Position ){ .x = pos.x, .y = pos.y - 1 };
+            kill_pawn_found[3] = true;
         }
     }
     // End checking for y down
 
     for ( int i = 0; i < 4; i++ )
     {
-        if ( kill_pawn_position[i].x != 0 && kill_pawn_position[i].y != 0 )
+        if ( kill_pawn_found[i] )
         {
             capture( kill_pawn_position[i] );
         }

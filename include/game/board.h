@@ -5,12 +5,6 @@
 
 #include <stdbool.h>
 
-extern bool game_ended;
-extern int current_tour;
-extern TeamsColor current_team;
-extern SelectedPawn is_pawn_selected;
-extern BoardCell game_board[BOARD_ROWS][BOARD_COLS];
-
 /**
  * @brief Setup the board with initial values
  * @param board Board to initialize
@@ -48,5 +42,7 @@ bool is_diagonal( Position pos );
 bool is_own_side( TeamsColor team, Position pos );
 
 bool is_player_around( Position pos );
+
+void end_game( TeamsColor winner );
 
 #endif

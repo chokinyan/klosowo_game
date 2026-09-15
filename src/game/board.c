@@ -1,4 +1,5 @@
 #include "game/board.h"
+#include "log/log.h"
 #include <string.h>
 
 BoardCell game_board[BOARD_ROWS][BOARD_COLS];
@@ -67,7 +68,7 @@ bool is_nothing_in_cell( Position pos )
 
     BoardCell cell = game_board[pos.x][pos.y];
 
-    return cell.type != BARRER && cell.pawn != NULL_PAWN;
+    return cell.type != BARRER && cell.pawn == NULL_PAWN;
 }
 
 bool is_diagonal( Position pos )
@@ -114,4 +115,13 @@ bool is_player_around( Position pos )
         return true;
 
     return false;
+}
+
+void end_game( TeamsColor winner )
+{
+    game_ended = true;
+    if ( winner == BLUE )
+        log_debug( "Blue team won the game!" );
+    else
+        log_debug( "Red team won the game!" );
 }

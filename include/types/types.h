@@ -10,6 +10,9 @@
 
 #define MAX_TOUR 64
 
+extern bool game_ended;
+extern int current_tour;
+
 // Tout les type de logger possible
 typedef enum
 {
@@ -76,12 +79,16 @@ typedef struct BoardCell
 
 /**
  * @brief Represent a selected pawn
- * 
+ *
  */
 typedef struct SelectedPawn
 {
     Position position;
     bool is_selected;
 } SelectedPawn;
+
+extern TeamsColor current_team;
+extern SelectedPawn is_pawn_selected;
+extern BoardCell game_board[BOARD_ROWS][BOARD_COLS];
 
 #endif

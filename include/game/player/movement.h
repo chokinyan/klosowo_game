@@ -37,7 +37,7 @@ bool is_movement_possible( Position start, Position end );
 
 bool place_barrer( Position pos, TeamsColor team );
 
-bool is_conquete( Position start);
+bool is_conquete( Position start,Position end );
 
 bool is_the_team( TeamsColor player_color, Position pos );
 
