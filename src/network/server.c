@@ -1,7 +1,11 @@
 #include "network/server.h"
 #include "network/network.h"
+#include "types/types.h"
+#include <arpa/inet.h>
 #include <string.h>
 #include <unistd.h>
+
+char *opposent_ip = NULL;
 
 bool init_server( struct sockaddr_in addr )
 {
@@ -31,6 +35,8 @@ bool init_server( struct sockaddr_in addr )
 
     // 4. On accepte le joueur client qui se connecte
     sock_fd = accept( listen_fd, NULL, NULL );
+    if ( opposent_ip == NULL )
+        opposent_ip = inet_ntoa( addr.sin_addr );
     close( listen_fd ); // On ferme la socket d'ecoute
                         // car on a notre joueur
     if ( sock_fd < 0 )
@@ -43,6 +49,13 @@ int network_receive( char *buffer, int max_len )
     if ( sock_fd < 0 )
         return 0;
 
+    if ( !is_connected )
+        return 0;
+
+    if ( opposent_ip == NULL )
+        return 0;
+
+    
 
     // On vide le tableau avant de lire
     memset( buffer, 0, max_len );
@@ -55,8 +68,6 @@ int network_receive( char *buffer, int max_len )
     }
 
     buffer[bytes] = '\0'; // On rajoute la fin de chaine
-
-
 
     if ( !check_good_format( buffer ) )
     {

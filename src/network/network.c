@@ -2,6 +2,7 @@
 #include "network/client.h"
 #include "network/server.h"
 
+#include "types/types.h"
 #include <arpa/inet.h>
 #include <regex.h>
 #include <string.h>
@@ -22,16 +23,15 @@ int network_init( int is_server, const char *ip, int port )
 
     if ( is_server )
     {
-        // --- ETAPE SERVEUR ---
 
         init_server( addr );
     }
     else
     {
-        // --- ETAPE CLIENT ---
 
         init_client( ip, addr );
     }
+
     return 1; // La connexion est reussie !
 }
 

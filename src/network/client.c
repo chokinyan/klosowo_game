@@ -1,5 +1,5 @@
 #include "network/client.h"
-#include "network/network.h"
+#include "types/types.h"
 #include <arpa/inet.h>
 #include <stdio.h>
 #include <string.h>

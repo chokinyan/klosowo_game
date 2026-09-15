@@ -13,6 +13,15 @@
 extern bool game_ended;
 extern int current_tour;
 
+// Variable globale pour garder en memoire le tuyau de
+// connexion (la socket)
+extern short sock_fd;
+extern bool is_server;
+extern bool is_client;
+extern bool is_connected;
+
+extern char *opposent_ip;
+
 // Tout les type de logger possible
 typedef enum
 {
