@@ -13,6 +13,6 @@ void cell_on_click( GtkGestureClick *gesture, int n_press, double x, double y, g
 
 /**  Dessine les lignes de la grille du plateau (BOARD_ROWS
  * x BOARD_COLS). */
-void draw_bord( GtkDrawingArea *drawing_area, cairo_t *cairo, int width, int height, gpointer user_data );
+void draw_board( GtkDrawingArea *drawing_area, cairo_t *cairo, int width, int height, gpointer user_data );
 
 #endif

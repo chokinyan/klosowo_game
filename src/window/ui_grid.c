@@ -8,7 +8,7 @@
 #include "game/player/movement.h"
 #include "types/types.h"
 
-void draw_bord( GtkDrawingArea *drawing_area, cairo_t *cairo, int width, int height, gpointer user_data )
+void draw_board( GtkDrawingArea *drawing_area, cairo_t *cairo, int width, int height, gpointer user_data )
 {
     (void)drawing_area;
     (void)user_data;
@@ -117,6 +117,7 @@ void cell_on_click( GtkGestureClick *gesture, int n_press, double x, double y, g
                 if ( moove_player( start, end, current_team ) )
                 {
                     game_board[start.x][start.y].is_selected = false;
+                    game_board[end.x][end.y].is_selected = false;
                     is_pawn_selected.is_selected = false;
 
                     current_tour++;
@@ -164,4 +165,6 @@ void cell_on_click( GtkGestureClick *gesture, int n_press, double x, double y, g
             end_game( red_point <= blue_point ? BLUE : RED );
         }
     }
+
+    gtk_widget_queue_draw( area );
 }
