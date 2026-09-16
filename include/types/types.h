@@ -98,6 +98,19 @@ typedef struct SelectedPawn
     bool is_selected;
 } SelectedPawn;
 
+typedef struct Capture
+{
+    Position start;
+    Position end;
+    TeamsColor team;
+} Capture;
+
+typedef struct Conquete
+{
+    bool is_ok;
+    TeamsColor team;
+} Conquete;
+
 extern Position diagonal_pos[11];
 
 extern TeamsColor current_team;

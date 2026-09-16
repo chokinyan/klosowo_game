@@ -1,10 +1,8 @@
 #include "network/server.h"
 #include "log/log.h"
-#include "network/network.h"
 #include "types/types.h"
 #include <arpa/inet.h>
 #include <errno.h>
-#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
@@ -100,7 +98,6 @@ int network_receive( char *buffer, int max_len )
         if ( bytes == 0 )
         {
             log_warn( "Serveur: le client a fermé la connexion" );
-            exit( 0 );
         }
         else
             log_error( "Serveur: recv() a échoué: %s", strerror( errno ) );

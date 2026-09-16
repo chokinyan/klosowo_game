@@ -8,10 +8,19 @@
 enum
 {
     AI_DEPTH = 3,
-    AI_MAX_MOVES = 50,
     AI_MAX_PIECES = 10,
-    AI_MAX_SCORE = 1000
+    AI_MAX_INF = 1000000000000,
+    AI_MIN_INF = -AI_MAX_INF
 };
+
+typedef struct TreeNode
+{
+    Position start;
+    Position end;
+    int score;
+    struct TreeNode *children;
+    int child_count;
+} TreeNode;
 
 extern Position ai_piece_pos[AI_MAX_PIECES];
 

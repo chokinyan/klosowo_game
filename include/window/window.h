@@ -8,10 +8,8 @@
 
 typedef enum
 {
-    CLIENT_BOARD,
-    CLIENT_CONSOLE,
-    SERVER_BOARD,
-    SERVER_CONSOLE,
+    WINDOW_BOARD,
+    WINDOW_CONSOLE,
 } WINDOW_TYPE;
 
 void init_game_window( GtkWidget *window, WINDOW_TYPE type );
@@ -21,7 +19,5 @@ void init_game_console( GtkWidget *window );
 
 void draw_client_board( GtkWidget *window );
 void draw_client_console( GtkWidget *window );
-void draw_server_board( GtkWidget *window );
-void draw_server_console( GtkWidget *window );
 
 #endif

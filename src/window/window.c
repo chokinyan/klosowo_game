@@ -12,24 +12,14 @@ void init_game_window( GtkWidget *window, WINDOW_TYPE window_type )
     const char *title;
     switch ( window_type )
     {
-    case CLIENT_BOARD:
-        title = "jeu cote client";
+    case WINDOW_BOARD:
+        title = "jeu du klosowo";
         draw_client_board( window );
         break;
 
-    case CLIENT_CONSOLE:
-        title = "console cote client";
+    case WINDOW_CONSOLE:
+        title = "console";
         draw_client_console( window );
-        break;
-
-    case SERVER_BOARD:
-        title = "jeu cote server";
-        draw_server_board( window );
-        break;
-
-    case SERVER_CONSOLE:
-        title = "console cote server";
-        draw_server_console( window );
         break;
 
     default:
@@ -67,13 +57,14 @@ void init_game_board( GtkWidget *window )
     gtk_drawing_area_set_draw_func( GTK_DRAWING_AREA( area ), draw_board, NULL, NULL );
 
     click = gtk_gesture_click_new();
-    g_signal_connect( click, "pressed", G_CALLBACK( cell_on_click ), area );
+    if ( !( is_server && is_ai_mode ) || !( is_client && is_ai_mode ) )
+        g_signal_connect( click, "pressed", G_CALLBACK( cell_on_click ), area );
     if ( is_server )
         g_io_add_watch( g_io_channel_unix_new( sock_fd ), G_IO_IN, on_network_data, area );
     else if ( is_client )
         g_io_add_watch( g_io_channel_unix_new( sock_fd ), G_IO_IN, on_network_data, area );
     else if ( is_ai_mode )
-        g_timeout_add( 1000, (GSourceFunc)on_ai_playing, area );
+        g_timeout_add( 100, (GSourceFunc)on_ai_playing, area );
 
     gtk_widget_add_controller( area, GTK_EVENT_CONTROLLER( click ) );
 
@@ -84,8 +75,4 @@ void init_game_console( GtkWidget *window ) { (void)window; }
 
 void draw_client_board( GtkWidget *window ) { init_game_board( window ); }
 
-void draw_client_console( GtkWidget *window ) { (void)window; }
-
-void draw_server_board( GtkWidget *window ) { init_game_board( window ); }
-
-void draw_server_console( GtkWidget *window ) { (void)window; }
+void draw_client_console( GtkWidget *window ) { init_game_console( window ); }

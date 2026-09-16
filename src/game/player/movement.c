@@ -157,3 +157,31 @@ bool is_the_team( TeamsColor player_color, Position pos )
 
     return false;
 }
+
+Conquete check_conquete( Position start, Position end )
+{
+    PawnType pawn = game_board[start.x][start.y].pawn;
+
+    {
+        switch ( pawn )
+        {
+
+        case RED_KING:
+            if ( game_board[end.x][end.y].type == BLUE_CAMP )
+            {
+                Conquete conquete = { .is_ok = true, .team = RED };
+                return conquete;
+            }
+            return ( Conquete ){ .is_ok = false };
+        case BLUE_KING:
+            if ( game_board[end.x][end.y].type == RED_CAMP )
+            {
+                end_game( BLUE );
+                return ( Conquete ){ .is_ok = true, .team = BLUE };
+            }
+            return ( Conquete ){ .is_ok = false, .team = RED };
+        default:
+            return ( Conquete ){ .is_ok = false };
+        }
+    }
+}

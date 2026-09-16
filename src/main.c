@@ -18,7 +18,7 @@ void activate( GtkApplication *app )
 
     window = gtk_application_window_new( app );
 
-    init_game_window( window, CLIENT_BOARD );
+    init_game_window( window, WINDOW_BOARD );
 }
 
 int main( int argc, char **argv )

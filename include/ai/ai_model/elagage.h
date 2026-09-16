@@ -1,0 +1,4 @@
+#ifndef KLOSOWO_ELAGAGE_H
+#define KLOSOWO_ELAGAGE_H
+
+#endif // KLOSOWO_ELAGAGE_H
