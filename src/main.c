@@ -62,6 +62,10 @@ int main( int argc, char **argv )
         {
             is_client = true;
         }
+        else if ( strcmp( argv[i], "-ia" ) == 0 )
+        {
+            is_ai_mode = true;
+        }
     }
 
     if ( is_server && is_client )

@@ -155,25 +155,25 @@ bool is_own_side( TeamsColor team, Position pos )
     return team == BLUE ? pos.x < boundary : pos.x > boundary;
 }
 
-bool is_player_around( Position pos )
+bool is_wrong_barrer_cell( Position pos )
 {
 
     if ( current_team == BLUE )
     {
         if ( pos.x == 1 && pos.y == 0 )
-            return false;
+            return true;
         else if ( pos.x == 0 && pos.y == 1 )
-            return false;
+            return true;
     }
     else
     {
         if ( pos.x == 5 && pos.y == 10 )
-            return false;
+            return true;
         else if ( pos.x == 6 && pos.y == 9 )
-            return false;
+            return true;
     }
 
-    return true;
+    return false;
 }
 
 void end_game( TeamsColor winner )

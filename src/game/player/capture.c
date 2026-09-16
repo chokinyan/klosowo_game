@@ -143,8 +143,6 @@ bool capture( Position target_position )
         return true;
     }
 
-    BoardCell target_cell = game_board[target_position.x][target_position.y];
-
     Position *team_pieces_pos = target.pawn == RED_SOLDIER ? red_team_pices_pos : blue_team_pices_pos;
 
     for ( int i = 0; i < AI_MAX_PIECES; i++ )
@@ -156,8 +154,8 @@ bool capture( Position target_position )
         }
     }
 
-    target_cell.pawn = NULL_PAWN;
-    target_cell.type = EMPTY;
+    game_board[target_position.x][target_position.y].pawn = NULL_PAWN;
+    game_board[target_position.x][target_position.y].type = EMPTY;
 
     return true;
 }

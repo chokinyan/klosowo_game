@@ -41,7 +41,7 @@ bool is_diagonal( Position pos );
 
 bool is_own_side( TeamsColor team, Position pos );
 
-bool is_player_around( Position pos );
+bool is_wrong_barrer_cell( Position pos );
 
 void end_game( TeamsColor winner );
 

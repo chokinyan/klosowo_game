@@ -17,4 +17,6 @@ extern Position ai_piece_pos[AI_MAX_PIECES];
 
 gboolean ai_make_move();
 
+bool ai_place_barrer();
+
 #endif // KLOSNOWO_AI_H

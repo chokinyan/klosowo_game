@@ -94,10 +94,13 @@ bool place_barrer( Position pos )
     if ( is_out_of_bound( pos ) )
         return false;
 
+    if ( game_board[pos.x][pos.y].pawn != NULL_PAWN )
+        return false;
+
     if ( game_board[pos.x][pos.y].type == RED_CAMP || game_board[pos.x][pos.y].type == BLUE_CAMP )
         return false;
 
-    if ( !is_own_side( current_team, pos ) || is_diagonal( pos ) || is_player_around( pos ) )
+    if ( !is_own_side( current_team, pos ) || is_diagonal( pos ) || is_wrong_barrer_cell( pos ) )
         return false;
 
     game_board[pos.x][pos.y].type = BARRER;

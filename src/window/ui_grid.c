@@ -289,14 +289,33 @@ gboolean on_network_data( GIOChannel *source, GIOCondition condition, gpointer u
 gboolean on_ai_playing( GtkWidget *area )
 {
     if ( ai_team != current_team )
-        return false;
+        return TRUE;
+
+    if ( current_tour < 2 ) // Place barrier phase
+    {
+        if ( !ai_place_barrer() )
+        {
+            log_warn( "AI failed to place a barrier." );
+            return TRUE; // Continue to monitor the AI
+        }
+
+        current_tour++;
+        current_team = ( current_team == RED ) ? BLUE : RED;
+
+        gtk_widget_queue_draw( area );
+        return TRUE;
+    }
 
     if ( !ai_make_move() )
-        return false;
+    {
+        log_warn( "AI failed to make a move." );
+
+        return TRUE; // Continue to monitor the AI
+    }
 
     current_tour++;
     current_team = ( current_team == RED ) ? BLUE : RED;
 
     gtk_widget_queue_draw( area );
-    return true;
+    return TRUE;
 }

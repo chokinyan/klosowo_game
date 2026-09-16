@@ -1,9 +1,10 @@
 #include "ai/ai.h"
 #include "game/player/movement.h"
+#include "log/log.h"
 #include <stdlib.h>
 #include <string.h>
 
-extern Position ai_piece_pos[AI_MAX_PIECES];
+Position ai_piece_pos[AI_MAX_PIECES];
 
 gboolean ai_make_move()
 {
@@ -11,6 +12,8 @@ gboolean ai_make_move()
     memset( ai_piece_pos, 0, sizeof( ai_piece_pos ) );
 
     memcpy( ai_piece_pos, ai_team == RED ? red_team_pices_pos : blue_team_pices_pos, sizeof( ai_piece_pos ) );
+
+    log_debug("Ai play");
 
     for ( short j = 0; j < 400; j++ )
     {
