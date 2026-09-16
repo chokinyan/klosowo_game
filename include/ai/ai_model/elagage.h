@@ -9,6 +9,6 @@ int ai_eval();
 
 int calculate_heuristic();
 
-int min_max( int depth, int heuristic, int alpha, int beta );
+int min_max( int depth, int heuristic, int alpha, int beta, AiTreeNode *node );
 
 #endif // KLOSOWO_ELAGAGE_H

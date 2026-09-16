@@ -29,36 +29,40 @@ int calculate_heuristic()
     return heuristic;
 }
 
-int min_max( int depth, int heuristic, int alpha, int beta )
+int min_max( int depth, int heuristic, int alpha, int beta, AiTreeNode *node )
 {
     if ( depth == 0 )
         return calculate_heuristic();
 
     if ( current_team != ai_team )
     {
-        int M = ai_eval();
-        for ( int i = 0; i < AiTreeBase->child_count; i++ )
+        int m = ai_eval();
+        for ( int i = 0; i < node->child_count; i++ )
         {
-            int eval = min_max( depth - 1, heuristic, alpha, beta );
-            beta = ( eval < beta ) ? eval : beta;
-            if ( beta <= alpha )
-                break; // Alpha-beta pruning
-            beta = ( eval < beta ) ? eval : beta;
+            int eval = min_max( depth - 1, heuristic, alpha, beta, node->children + i );
+            if ( eval < m )
+                m = eval;
+            else if ( m <= alpha )
+                return m;
+
+            beta = ( beta < m ) ? beta : m;
         }
-        return M;
+        return m;
     }
     else
     {
-        int M = ai_eval();
-        for ( int i = 0; i < AiTreeBase->child_count; i++ )
+        int m = ai_eval();
+        for ( int i = 0; i < node->child_count; i++ )
         {
-            int eval = min_max( depth - 1, heuristic, alpha, beta );
-            alpha = ( eval > alpha ) ? eval : alpha;
-            if ( beta <= alpha )
-                break; // Alpha-beta pruning
-            alpha = ( eval > alpha ) ? eval : alpha;
+            int eval = min_max( depth - 1, heuristic, alpha, beta, node->children + i );
+            if ( eval > m )
+                m = eval;
+            else if ( m >= beta )
+                return m;
+
+            alpha = ( alpha > m ) ? alpha : m;
         }
-        return M;
+        return m;
     }
 
     return 0;

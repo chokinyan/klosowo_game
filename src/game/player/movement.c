@@ -161,7 +161,7 @@ Conquete check_conquete( Position start, Position end )
                 end_game( BLUE );
                 return ( Conquete ){ .is_ok = true, .team = BLUE };
             }
-            return ( Conquete ){ .is_ok = false, .team = RED };
+            return ( Conquete ){ .is_ok = false };
         default:
             return ( Conquete ){ .is_ok = false };
         }
