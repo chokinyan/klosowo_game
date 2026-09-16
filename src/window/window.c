@@ -57,7 +57,7 @@ void init_game_board( GtkWidget *window )
     gtk_drawing_area_set_draw_func( GTK_DRAWING_AREA( area ), draw_board, NULL, NULL );
 
     click = gtk_gesture_click_new();
-    if ( !( is_server && is_ai_mode ) || !( is_client && is_ai_mode ) )
+    if ( is_local )
         g_signal_connect( click, "pressed", G_CALLBACK( cell_on_click ), area );
     if ( is_server )
         g_io_add_watch( g_io_channel_unix_new( sock_fd ), G_IO_IN, on_network_data, area );

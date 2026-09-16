@@ -33,4 +33,8 @@ bool seultout( Position start, Position end, TeamsColor pawn_team );
  */
 bool capture( Position target_position );
 
+bool check_seultout( Position start, Position end, TeamsColor pawn_team );
+
+void check_linca( Position pos, TeamsColor pawn_team, Position *kill_pawn_position );
+
 #endif // KLOSNOWO_CAPTURE_H

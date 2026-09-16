@@ -1,10 +1,14 @@
 #ifndef KLOSOWO_ELAGAGE_H
 #define KLOSOWO_ELAGAGE_H
 
-#include "types/types.h"
+#include "ai/ai.h"
 
-int eval();
+extern AiTreeNode *AiTreeBase;
 
-int min_max(  int depth, int heuristic, int alpha, int beta );
+int ai_eval();
+
+int calculate_heuristic();
+
+int min_max( int depth, int heuristic, int alpha, int beta );
 
 #endif // KLOSOWO_ELAGAGE_H

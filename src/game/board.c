@@ -13,21 +13,6 @@ TeamsColor my_color;
 Position red_team_pices_pos[10];
 Position blue_team_pices_pos[10];
 
-/*
-0    1    2    3    4    5    6    7    8    9   10
- -----------------------------------------------------
-0  |  CB   .    TB   TB   .    .    .    .    J    J    J   |
-1  |  .    RB   TB   TB   .    .    .    J    .    .    .   |
-2  |  TB   TB   TB   .    .    .    J    .    .    .    .   |
-3  |  TB   TB   .    .    .    J    .    .    .    TR   TR  |
-4  |  .    .    .    .    J    .    .    .    TR   TR   TR  |
-5  |  .    .    .    J    .    .    .    TR   TR   RR   .   |
-6  |  J    J    J    .    .    .    .    TR   TR   .    CR  |
- -----------------------------------------------------
-
-
-*/
-
 /**
  * @brief Setup the board with initial values
  */

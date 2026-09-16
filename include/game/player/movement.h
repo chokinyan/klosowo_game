@@ -41,4 +41,8 @@ bool is_conquete( Position start,Position end );
 
 bool is_the_team( TeamsColor player_color, Position pos );
 
+Conquete check_conquete( Position start, Position end );
+
+bool check_barrer( Position pos );
+
 #endif // KLOSNOWO_MOVEMENT_H

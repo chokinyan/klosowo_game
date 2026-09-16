@@ -8,6 +8,7 @@
 bool is_server = false;
 bool is_client = false;
 bool is_ai_mode = false;
+bool is_local = false;
 
 char *ip_address = NULL;
 int port = 0;
@@ -23,6 +24,12 @@ void activate( GtkApplication *app )
 
 int main( int argc, char **argv )
 {
+
+    if ( argc < 2 )
+    {
+        log_error( "Usage: %s [-s|-c] [-ia] [-l] [ip_address:port] [port]\n", argv[0] );
+        return 1;
+    }
 
     srand( time( NULL ) );
 
@@ -53,6 +60,10 @@ int main( int argc, char **argv )
         {
             port = atoi( argv[i] );
             continue;
+        }
+        if ( strcmp( argv[i], "-l" ) == 0 )
+        {
+            is_local = true;
         }
         if ( strcmp( argv[i], "-s" ) == 0 )
         {

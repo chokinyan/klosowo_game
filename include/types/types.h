@@ -20,6 +20,7 @@ extern bool is_server;
 extern bool is_client;
 extern bool is_connected;
 extern bool is_ai_mode;
+extern bool is_local;
 
 extern char *opposent_ip;
 // Tout les type de logger possible

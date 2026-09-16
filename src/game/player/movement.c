@@ -100,16 +100,8 @@ bool is_movement_possible( Position start, Position end )
 
 bool place_barrer( Position pos )
 {
-    if ( is_out_of_bound( pos ) )
-        return false;
 
-    if ( game_board[pos.x][pos.y].pawn != NULL_PAWN )
-        return false;
-
-    if ( game_board[pos.x][pos.y].type == RED_CAMP || game_board[pos.x][pos.y].type == BLUE_CAMP )
-        return false;
-
-    if ( !is_own_side( current_team, pos ) || is_diagonal( pos ) || is_wrong_barrer_cell( pos ) )
+    if ( !check_barrer( pos ) )
         return false;
 
     game_board[pos.x][pos.y].type = BARRER;
@@ -120,29 +112,10 @@ bool place_barrer( Position pos )
 bool is_conquete( Position start, Position end )
 {
 
-    PawnType pawn = game_board[start.x][start.y].pawn;
-
+    if ( check_conquete( start, end ).is_ok )
     {
-        switch ( pawn )
-        {
-
-        case RED_KING:
-            if ( game_board[end.x][end.y].type == BLUE_CAMP )
-            {
-                end_game( RED );
-                return true;
-            }
-            return false;
-        case BLUE_KING:
-            if ( game_board[end.x][end.y].type == RED_CAMP )
-            {
-                end_game( BLUE );
-                return true;
-            }
-            return false;
-        default:
-            return false;
-        }
+        end_game( check_conquete( start, end ).team );
+        return true;
     }
 
     return false;
@@ -193,4 +166,21 @@ Conquete check_conquete( Position start, Position end )
             return ( Conquete ){ .is_ok = false };
         }
     }
+}
+
+bool check_barrer( Position pos )
+{
+    if ( is_out_of_bound( pos ) )
+        return false;
+
+    if ( game_board[pos.x][pos.y].pawn != NULL_PAWN )
+        return false;
+
+    if ( game_board[pos.x][pos.y].type == RED_CAMP || game_board[pos.x][pos.y].type == BLUE_CAMP )
+        return false;
+
+    if ( !is_own_side( current_team, pos ) || is_diagonal( pos ) || is_wrong_barrer_cell( pos ) )
+        return false;
+
+    return true;
 }
