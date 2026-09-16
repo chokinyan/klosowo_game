@@ -1,8 +1,9 @@
 #include "window/window.h"
-#include "ai/ai.h"
 #include "log/log.h"
 #include "types/types.h"
 #include "window/ui_grid.h"
+
+TeamsColor ai_team;
 
 void init_game_window( GtkWidget *window, WINDOW_TYPE window_type )
 {
@@ -32,7 +33,7 @@ void init_game_window( GtkWidget *window, WINDOW_TYPE window_type )
         break;
 
     default:
-        g_print( "Window type not found !" );
+        log_error( "Window type not found !" );
         return;
     }
 
@@ -72,7 +73,7 @@ void init_game_board( GtkWidget *window )
     else if ( is_client )
         g_io_add_watch( g_io_channel_unix_new( sock_fd ), G_IO_IN, on_network_data, area );
     else if ( is_ai_mode )
-        g_timeout_add( 1000, (GSourceFunc)ai_make_move, area );
+        g_timeout_add( 1000, (GSourceFunc)on_ai_playing, area );
 
     gtk_widget_add_controller( area, GTK_EVENT_CONTROLLER( click ) );
 

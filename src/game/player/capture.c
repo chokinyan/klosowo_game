@@ -1,4 +1,5 @@
 #include "game/player/capture.h"
+#include "ai/ai.h"
 #include "game/board.h"
 #include "game/player/team_check.h"
 
@@ -142,8 +143,21 @@ bool capture( Position target_position )
         return true;
     }
 
-    game_board[target_position.x][target_position.y].pawn = NULL_PAWN;
-    game_board[target_position.x][target_position.y].type = EMPTY;
+    BoardCell target_cell = game_board[target_position.x][target_position.y];
+
+    Position *team_pieces_pos = target.pawn == RED_SOLDIER ? red_team_pices_pos : blue_team_pices_pos;
+
+    for ( int i = 0; i < AI_MAX_PIECES; i++ )
+    {
+        if ( team_pieces_pos[i].x == target_position.x && team_pieces_pos[i].y == target_position.y )
+        {
+            team_pieces_pos[i] = ( Position ){ .x = -1, .y = -1 };
+            break;
+        }
+    }
+
+    target_cell.pawn = NULL_PAWN;
+    target_cell.type = EMPTY;
 
     return true;
 }

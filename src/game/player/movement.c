@@ -1,6 +1,7 @@
 #include "game/player/movement.h"
 #include "game/board.h"
 #include "game/player/capture.h"
+#include "log/log.h"
 #include <string.h>
 
 bool moove_player( Position start, Position end, TeamsColor pawn_team )
@@ -30,7 +31,7 @@ bool moove_player( Position start, Position end, TeamsColor pawn_team )
 
     for ( short i = 0; i < 10; i++ )
     {
-        if ( &team_playing_pieces[i] == NULL )
+        if ( team_playing_pieces[i].x == -1 && team_playing_pieces[i].y == -1 )
             continue;
         if ( team_playing_pieces[i].x == start.x && team_playing_pieces[i].y == start.y )
         {
@@ -46,6 +47,8 @@ bool moove_player( Position start, Position end, TeamsColor pawn_team )
 
     seultout( start, end, pawn_team );
     linca( end, pawn_team );
+
+    log_debug( "Move made : (%d,%d) -> (%d,%d) / round : %d", start.x, start.y, end.x, end.y, current_tour );
 
     return true;
 }
@@ -94,8 +97,8 @@ bool place_barrer( Position pos )
     if ( game_board[pos.x][pos.y].type == RED_CAMP || game_board[pos.x][pos.y].type == BLUE_CAMP )
         return false;
 
-    // if ( !is_own_side( team, pos ) || is_diagonal( pos ) || is_player_around( pos ) )
-    //     return false;
+    if ( !is_own_side( current_team, pos ) || is_diagonal( pos ) || is_player_around( pos ) )
+        return false;
 
     game_board[pos.x][pos.y].type = BARRER;
 

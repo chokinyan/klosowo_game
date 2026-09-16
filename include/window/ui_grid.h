@@ -18,4 +18,6 @@ void draw_board( GtkDrawingArea *drawing_area, cairo_t *cairo, int width, int he
 // ui_grid.h — ajoute la déclaration
 gboolean on_network_data( GIOChannel *source, GIOCondition condition, gpointer user_data );
 
+gboolean on_ai_playing( GtkWidget *area );
+
 #endif

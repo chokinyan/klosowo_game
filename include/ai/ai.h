@@ -13,8 +13,7 @@ enum
     AI_MAX_SCORE = 1000
 };
 
-static int ai_valide_pieces;
-static Position ai_piece_pos[AI_MAX_PIECES];
+extern Position ai_piece_pos[AI_MAX_PIECES];
 
 gboolean ai_make_move();
 

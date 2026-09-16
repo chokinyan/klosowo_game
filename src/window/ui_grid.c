@@ -192,7 +192,10 @@ void cell_on_click( GtkGestureClick *gesture, int n_press, double x, double y, g
 
         if ( is_the_team( current_team, ( Position ){ .x = row, .y = col } ) )
         {
-            g_print( "row : %i / col : %i\n", row, col );
+            if ( is_pawn_selected.is_selected )
+            {
+                game_board[is_pawn_selected.position.x][is_pawn_selected.position.y].is_selected = false;
+            }
             game_board[row][col].is_selected = true;
             is_pawn_selected.position.x = row;
             is_pawn_selected.position.y = col;
@@ -229,7 +232,6 @@ void cell_on_click( GtkGestureClick *gesture, int n_press, double x, double y, g
             end_game( red_point <= blue_point ? BLUE : RED );
         }
     }
-
     gtk_widget_queue_draw( area );
 }
 
@@ -284,7 +286,7 @@ gboolean on_network_data( GIOChannel *source, GIOCondition condition, gpointer u
     return TRUE; // TRUE = continue a surveiller la socket
 }
 
-bool on_ai_playing( GtkWidget *area )
+gboolean on_ai_playing( GtkWidget *area )
 {
     if ( ai_team != current_team )
         return false;

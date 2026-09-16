@@ -3,10 +3,12 @@
 #include <stdlib.h>
 #include <string.h>
 
-static Position ai_piece_pos[AI_MAX_PIECES];
+extern Position ai_piece_pos[AI_MAX_PIECES];
 
 gboolean ai_make_move()
 {
+
+    memset( ai_piece_pos, 0, sizeof( ai_piece_pos ) );
 
     memcpy( ai_piece_pos, ai_team == RED ? red_team_pices_pos : blue_team_pices_pos, sizeof( ai_piece_pos ) );
 
@@ -14,15 +16,13 @@ gboolean ai_make_move()
     {
         int x = rand() % AI_MAX_PIECES;
 
-        if ( &ai_piece_pos[x] == NULL )
+        if ( ai_piece_pos[x].x == -1 && ai_piece_pos[x].y == -1 )
             continue;
 
         Position piece = ai_piece_pos[x];
 
         for ( short i = 0; i < AI_MAX_MOVES; i++ )
         {
-            if ( &ai_piece_pos[i] == NULL )
-                continue;
 
             Position end = { .x = rand() % BOARD_ROWS, .y = rand() % BOARD_COLS };
 

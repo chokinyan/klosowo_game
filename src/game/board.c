@@ -157,23 +157,23 @@ bool is_own_side( TeamsColor team, Position pos )
 
 bool is_player_around( Position pos )
 {
-    if ( !is_out_of_bound( ( Position ){ .x = pos.x + 1, .y = pos.y } ) &&
-         game_board[pos.x + 1][pos.y].pawn != NULL_PAWN )
-        return true;
 
-    if ( !is_out_of_bound( ( Position ){ .x = pos.x - 1, .y = pos.y } ) &&
-         game_board[pos.x - 1][pos.y].pawn != NULL_PAWN )
-        return true;
+    if ( current_team == BLUE )
+    {
+        if ( pos.x == 1 && pos.y == 0 )
+            return false;
+        else if ( pos.x == 0 && pos.y == 1 )
+            return false;
+    }
+    else
+    {
+        if ( pos.x == 5 && pos.y == 10 )
+            return false;
+        else if ( pos.x == 6 && pos.y == 9 )
+            return false;
+    }
 
-    if ( !is_out_of_bound( ( Position ){ .x = pos.x, .y = pos.y + 1 } ) &&
-         game_board[pos.x][pos.y + 1].pawn != NULL_PAWN )
-        return true;
-
-    if ( !is_out_of_bound( ( Position ){ .x = pos.x, .y = pos.y - 1 } ) &&
-         game_board[pos.x][pos.y - 1].pawn != NULL_PAWN )
-        return true;
-
-    return false;
+    return true;
 }
 
 void end_game( TeamsColor winner )
