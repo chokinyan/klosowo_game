@@ -21,8 +21,19 @@ bool moove_player( Position start, Position end, TeamsColor pawn_team )
     }
     else
     {
-        game_board[end.x][end.y] = game_board[start.x][start.y];
+        switch ( current_team )
+        {
+        case RED:
+            game_board[end.x][end.y].type = RED_TEAM;
+            break;
+        case BLUE:
+            game_board[end.x][end.y].type = BLUE_TEAM;
+            break;
+        }
+        game_board[end.x][end.y].pawn = game_board[start.x][start.y].pawn;
     }
+
+    game_board[start.x][start.y].pawn = NULL_PAWN;
 
     Position team_playing_pieces[10];
 
@@ -42,8 +53,6 @@ bool moove_player( Position start, Position end, TeamsColor pawn_team )
 
     memcpy( pawn_team == RED ? red_team_pices_pos : blue_team_pices_pos, team_playing_pieces,
             sizeof( team_playing_pieces ) );
-
-    game_board[start.x][start.y].pawn = NULL_PAWN;
 
     seultout( start, end, pawn_team );
     linca( end, pawn_team );

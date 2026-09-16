@@ -10,7 +10,6 @@
 #include "log/log.h"
 #include "network/client.h"
 #include "network/server.h"
-#include "types/types.h"
 
 void draw_board( GtkDrawingArea *drawing_area, cairo_t *cairo, int width, int height, gpointer user_data )
 {
@@ -24,51 +23,31 @@ void draw_board( GtkDrawingArea *drawing_area, cairo_t *cairo, int width, int he
     {
         for ( int col = 0; col < BOARD_COLS; col++ )
         {
+
             BoardCell cell = game_board[row][col];
+
             switch ( cell.type )
             {
             case RED_TEAM:
-                cairo_set_source_rgba( cairo, 1, 0, 0, 1.0 );
-                if ( cell.pawn != NULL_PAWN )
-                {
-                    cairo_arc( cairo, ( col * cell_width ) + ( cell_width / 2 ),
-                               ( row * cell_height ) + ( cell_height / 2 ), 10, 0, 2 * G_PI );
-                    cairo_stroke_preserve( cairo );
-                }
-                if ( cell.pawn == RED_KING )
-                {
-                    cairo_arc( cairo, ( col * cell_width ) + ( cell_width / 2 ),
-                               ( row * cell_height ) + ( cell_height / 2 ), 5, 0, 2 * G_PI );
-                    cairo_fill_preserve( cairo );
-                    cairo_stroke_preserve( cairo );
-                }
+                draw_pawn( cairo, col, row, cell, cell_width, cell_height );
                 cairo_set_source_rgba( cairo, 1, 0, 0, 0.4 );
                 break;
 
             case RED_CAMP:
+                draw_pawn( cairo, col, row, cell, cell_width, cell_height );
                 cairo_set_source_rgba( cairo, 1, 0, 0, 0.4 );
                 break;
-            case BLUE_CAMP:
-                cairo_set_source_rgba( cairo, 0, 0, 1, 0.4 );
-                break;
-            case BLUE_TEAM:
-                cairo_set_source_rgba( cairo, 0, 0, 1, 1.0 );
-                if ( cell.pawn != NULL_PAWN )
-                {
-                    cairo_arc( cairo, ( col * cell_width ) + ( cell_width / 2 ),
-                               ( row * cell_height ) + ( cell_height / 2 ), 10, 0, 2 * G_PI );
-                    cairo_stroke_preserve( cairo );
-                }
-                if ( cell.pawn == BLUE_KING )
-                {
-                    cairo_arc( cairo, ( col * cell_width ) + ( cell_width / 2 ),
-                               ( row * cell_height ) + ( cell_height / 2 ), 5, 0, 2 * G_PI );
-                    cairo_fill_preserve( cairo );
-                    cairo_stroke_preserve( cairo );
-                }
 
+            case BLUE_CAMP:
+                draw_pawn( cairo, col, row, cell, cell_width, cell_height );
                 cairo_set_source_rgba( cairo, 0, 0, 1, 0.4 );
                 break;
+
+            case BLUE_TEAM:
+                draw_pawn( cairo, col, row, cell, cell_width, cell_height );
+                cairo_set_source_rgba( cairo, 0, 0, 1, 0.4 );
+                break;
+
             case BARRER:
                 cairo_set_source_rgba( cairo, 0.54, 0.32, 0.16, 1.0 );
                 cairo_arc( cairo, ( col * cell_width ) + ( cell_width / 2 ),
@@ -99,6 +78,42 @@ void draw_board( GtkDrawingArea *drawing_area, cairo_t *cairo, int width, int he
         for ( int col = 0; col < BOARD_COLS; col++ )
             cairo_rectangle( cairo, col * cell_width, row * cell_height, cell_width, cell_height );
     cairo_stroke( cairo );
+}
+
+void draw_pawn( cairo_t *cairo, int col, int row, BoardCell cell, double cell_width, double cell_height )
+{
+    switch ( cell.pawn )
+    {
+    case RED_SOLDIER:
+
+        cairo_set_source_rgba( cairo, 1, 0, 0, 1.0 );
+        cairo_arc( cairo, ( col * cell_width ) + ( cell_width / 2 ), ( row * cell_height ) + ( cell_height / 2 ), 10, 0,
+                   2 * G_PI );
+        cairo_stroke_preserve( cairo );
+        break;
+    case RED_KING:
+        cairo_set_source_rgba( cairo, 1, 0, 0, 1.0 );
+        cairo_arc( cairo, ( col * cell_width ) + ( cell_width / 2 ), ( row * cell_height ) + ( cell_height / 2 ), 5, 0,
+                   2 * G_PI );
+        cairo_fill_preserve( cairo );
+        cairo_stroke_preserve( cairo );
+        break;
+    case BLUE_SOLDIER:
+        cairo_set_source_rgba( cairo, 0, 0, 1, 1.0 );
+        cairo_arc( cairo, ( col * cell_width ) + ( cell_width / 2 ), ( row * cell_height ) + ( cell_height / 2 ), 10, 0,
+                   2 * G_PI );
+        cairo_stroke_preserve( cairo );
+        break;
+    case BLUE_KING:
+        cairo_set_source_rgba( cairo, 0, 0, 1, 1.0 );
+        cairo_arc( cairo, ( col * cell_width ) + ( cell_width / 2 ), ( row * cell_height ) + ( cell_height / 2 ), 5, 0,
+                   2 * G_PI );
+        cairo_fill_preserve( cairo );
+        cairo_stroke_preserve( cairo );
+        break;
+    default:
+        break;
+    }
 }
 
 void cell_on_click( GtkGestureClick *gesture, int n_press, double x, double y, gpointer user_data )

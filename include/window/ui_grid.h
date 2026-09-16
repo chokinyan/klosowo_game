@@ -7,6 +7,7 @@
 #ifndef KLOSNOWO_WINDOW_UI_GRID_H
 #define KLOSNOWO_WINDOW_UI_GRID_H
 
+#include "types/types.h"
 #include <gtk/gtk.h>
 
 void cell_on_click( GtkGestureClick *gesture, int n_press, double x, double y, gpointer user_data );
@@ -14,6 +15,8 @@ void cell_on_click( GtkGestureClick *gesture, int n_press, double x, double y, g
 /**  Dessine les lignes de la grille du plateau (BOARD_ROWS
  * x BOARD_COLS). */
 void draw_board( GtkDrawingArea *drawing_area, cairo_t *cairo, int width, int height, gpointer user_data );
+
+void draw_pawn( cairo_t *cairo, int col, int row, BoardCell cell, double cell_width, double cell_height );
 
 // ui_grid.h — ajoute la déclaration
 gboolean on_network_data( GIOChannel *source, GIOCondition condition, gpointer user_data );

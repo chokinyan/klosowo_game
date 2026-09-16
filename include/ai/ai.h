@@ -18,6 +18,7 @@ typedef struct TreeNode
     Position start;
     Position end;
     int score;
+    TeamsColor team;
     struct TreeNode *children;
     int child_count;
 } TreeNode;
