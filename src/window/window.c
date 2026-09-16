@@ -1,4 +1,6 @@
 #include "window/window.h"
+#include "ai/ai.h"
+#include "log/log.h"
 #include "types/types.h"
 #include "window/ui_grid.h"
 
@@ -45,7 +47,19 @@ void init_game_board( GtkWidget *window )
     GtkWidget *area;
     GtkGesture *click;
 
-    my_color = is_server ? RED : BLUE;
+    ai_team = is_server ? RED : BLUE;
+
+    if ( !is_ai_mode )
+    {
+        if ( is_server )
+            my_color = RED;
+        else if ( is_client )
+            my_color = BLUE;
+    }
+    else
+    {
+        my_color = ai_team;
+    }
 
     area = gtk_drawing_area_new();
 
@@ -57,6 +71,9 @@ void init_game_board( GtkWidget *window )
         g_io_add_watch( g_io_channel_unix_new( sock_fd ), G_IO_IN, on_network_data, area );
     else if ( is_client )
         g_io_add_watch( g_io_channel_unix_new( sock_fd ), G_IO_IN, on_network_data, area );
+    else if ( is_ai_mode )
+        g_timeout_add( 1000, (GSourceFunc)ai_make_move, area );
+
     gtk_widget_add_controller( area, GTK_EVENT_CONTROLLER( click ) );
 
     gtk_window_set_child( GTK_WINDOW( window ), area );

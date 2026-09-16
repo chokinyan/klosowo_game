@@ -1,6 +1,7 @@
 #include "game/player/movement.h"
 #include "game/board.h"
 #include "game/player/capture.h"
+#include <string.h>
 
 bool moove_player( Position start, Position end, TeamsColor pawn_team )
 {
@@ -21,6 +22,25 @@ bool moove_player( Position start, Position end, TeamsColor pawn_team )
     {
         game_board[end.x][end.y] = game_board[start.x][start.y];
     }
+
+    Position team_playing_pieces[10];
+
+    memcpy( team_playing_pieces, pawn_team == RED ? red_team_pices_pos : blue_team_pices_pos,
+            sizeof( team_playing_pieces ) );
+
+    for ( short i = 0; i < 10; i++ )
+    {
+        if ( &team_playing_pieces[i] == NULL )
+            continue;
+        if ( team_playing_pieces[i].x == start.x && team_playing_pieces[i].y == start.y )
+        {
+            team_playing_pieces[i] = end;
+            break;
+        }
+    }
+
+    memcpy( pawn_team == RED ? red_team_pices_pos : blue_team_pices_pos, team_playing_pieces,
+            sizeof( team_playing_pieces ) );
 
     game_board[start.x][start.y].pawn = NULL_PAWN;
 
@@ -66,7 +86,7 @@ bool is_movement_possible( Position start, Position end )
     return true;
 }
 
-bool place_barrer( Position pos)
+bool place_barrer( Position pos )
 {
     if ( is_out_of_bound( pos ) )
         return false;
@@ -74,8 +94,8 @@ bool place_barrer( Position pos)
     if ( game_board[pos.x][pos.y].type == RED_CAMP || game_board[pos.x][pos.y].type == BLUE_CAMP )
         return false;
 
-    //if ( !is_own_side( team, pos ) || is_diagonal( pos ) || is_player_around( pos ) )
-    //    return false;
+    // if ( !is_own_side( team, pos ) || is_diagonal( pos ) || is_player_around( pos ) )
+    //     return false;
 
     game_board[pos.x][pos.y].type = BARRER;
 

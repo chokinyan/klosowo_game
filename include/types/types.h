@@ -19,6 +19,7 @@ extern short sock_fd;
 extern bool is_server;
 extern bool is_client;
 extern bool is_connected;
+extern bool is_ai_mode;
 
 extern char *opposent_ip;
 // Tout les type de logger possible
@@ -102,5 +103,9 @@ extern Position diagonal_pos[11];
 extern TeamsColor current_team;
 extern SelectedPawn is_pawn_selected;
 extern BoardCell game_board[BOARD_ROWS][BOARD_COLS];
+
+extern Position red_team_pices_pos[10];
+extern Position blue_team_pices_pos[10];
+extern TeamsColor ai_team;
 
 #endif

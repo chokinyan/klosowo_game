@@ -7,6 +7,7 @@
 
 bool is_server = false;
 bool is_client = false;
+bool is_ai_mode = false;
 
 char *ip_address = NULL;
 int port = 0;
@@ -22,6 +23,8 @@ void activate( GtkApplication *app )
 
 int main( int argc, char **argv )
 {
+
+    srand( time( NULL ) );
 
     regex_t regex;
     const char *pattern_server = "^[0-9]{1,5}$"; // Format attendu pour le port
@@ -63,18 +66,18 @@ int main( int argc, char **argv )
 
     if ( is_server && is_client )
     {
-        g_print( "Erreur : Vous ne pouvez pas etre a la fois serveur et client.\n" );
+        log_error( "Erreur : Vous ne pouvez pas etre a la fois serveur et client.\n" );
         return 1;
     }
 
     if ( is_server )
     {
-        g_print( "Lancement du serveur sur le port %d...\n", port );
+        log_info( "Lancement du serveur sur le port %d...\n", port );
         network_init( 1, NULL, port );
     }
     else if ( is_client )
     {
-        g_print( "Connexion au serveur %s sur le port %d...\n", ip_address, port );
+        log_info( "Connexion au serveur %s sur le port %d...\n", ip_address, port );
         network_init( 0, ip_address, port );
     }
 

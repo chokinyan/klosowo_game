@@ -10,6 +10,9 @@ SelectedPawn is_pawn_selected;
 Position diagonal_pos[11];
 TeamsColor my_color;
 
+Position red_team_pices_pos[10];
+Position blue_team_pices_pos[10];
+
 /*
 0    1    2    3    4    5    6    7    8    9   10
  -----------------------------------------------------
@@ -53,35 +56,60 @@ void setup_board()
     diagonal_pos[10] = ( Position ){ .x = 6, .y = 2 };
 
     // Set up the blue team
+
+    memcpy( blue_team_pices_pos,
+            ( Position[] ){ { .x = 0, .y = 2 },
+                            { .x = 0, .y = 3 },
+                            { .x = 1, .y = 2 },
+                            { .x = 1, .y = 3 },
+                            { .x = 2, .y = 0 },
+                            { .x = 2, .y = 1 },
+                            { .x = 2, .y = 2 },
+                            { .x = 3, .y = 0 },
+                            { .x = 3, .y = 1 },
+                            { .x = 1, .y = 1 } },
+            sizeof blue_team_pices_pos );
+
     game_board[0][0].type = BLUE_CAMP; // Blue camp
 
     game_board[1][1].type = BLUE_TEAM; // Blue king
     game_board[1][1].pawn = BLUE_KING;
 
     // Set up the blue towers
-    int blue_tower_positions[9][2] = { { 0, 2 }, { 0, 3 }, { 1, 2 }, { 1, 3 }, { 2, 0 },
-                                       { 2, 1 }, { 2, 2 }, { 3, 0 }, { 3, 1 } };
+
     for ( int i = 0; i < 9; i++ )
     {
-        int x = blue_tower_positions[i][0];
-        int y = blue_tower_positions[i][1];
+        int x = blue_team_pices_pos[i].x;
+        int y = blue_team_pices_pos[i].y;
         game_board[x][y].type = BLUE_TEAM;
         game_board[x][y].pawn = BLUE_SOLDIER;
     }
 
     // Set up the red team
+
+    memcpy( red_team_pices_pos,
+            ( Position[] ){ { .x = 3, .y = 9 },
+                            { .x = 3, .y = 10 },
+                            { .x = 4, .y = 8 },
+                            { .x = 4, .y = 9 },
+                            { .x = 4, .y = 10 },
+                            { .x = 5, .y = 7 },
+                            { .x = 5, .y = 8 },
+                            { .x = 6, .y = 7 },
+                            { .x = 6, .y = 8 },
+                            { .x = 5, .y = 9 } },
+            sizeof red_team_pices_pos );
+
     game_board[6][10].type = RED_CAMP; // Red camp
 
     game_board[5][9].type = RED_TEAM; // Red king
     game_board[5][9].pawn = RED_KING;
 
     // Set up the red towers
-    int red_tower_positions[9][2] = { { 3, 9 }, { 3, 10 }, { 4, 8 }, { 4, 9 }, { 4, 10 },
-                                      { 5, 7 }, { 5, 8 },  { 6, 7 }, { 6, 8 } };
     for ( int i = 0; i < 9; i++ )
     {
-        int x = red_tower_positions[i][0];
-        int y = red_tower_positions[i][1];
+        int x = red_team_pices_pos[i].x;
+        int y = red_team_pices_pos[i].y;
         game_board[x][y].type = RED_TEAM;
         game_board[x][y].pawn = RED_SOLDIER;
     }

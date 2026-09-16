@@ -4,6 +4,7 @@
 #include "types/types.h"
 #include <arpa/inet.h>
 #include <errno.h>
+#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
@@ -89,12 +90,6 @@ int network_receive( char *buffer, int max_len )
         return 0;
     }
 
-    if ( opposent_ip == NULL )
-    {
-        log_warn( "Serveur: réception ignorée, adresse du client inconnue" );
-        return 0;
-    }
-
     // On vide le tableau avant de lire
     memset( buffer, 0, max_len );
 
@@ -103,7 +98,10 @@ int network_receive( char *buffer, int max_len )
     if ( bytes <= 0 )
     {
         if ( bytes == 0 )
+        {
             log_warn( "Serveur: le client a fermé la connexion" );
+            exit( 0 );
+        }
         else
             log_error( "Serveur: recv() a échoué: %s", strerror( errno ) );
         return 0; // Erreur ou deconnexion

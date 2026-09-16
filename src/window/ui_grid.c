@@ -4,6 +4,7 @@
  * @author grp 6 ensisa
  */
 #include "window/ui_grid.h"
+#include "ai/ai.h"
 #include "game/board.h"
 #include "game/player/movement.h"
 #include "log/log.h"
@@ -232,7 +233,6 @@ void cell_on_click( GtkGestureClick *gesture, int n_press, double x, double y, g
     gtk_widget_queue_draw( area );
 }
 
-// ui_grid.c — ajoute l'implémentation, et #include "network/network.h" en haut
 gboolean on_network_data( GIOChannel *source, GIOCondition condition, gpointer user_data )
 {
     (void)source;
@@ -282,4 +282,19 @@ gboolean on_network_data( GIOChannel *source, GIOCondition condition, gpointer u
 
     gtk_widget_queue_draw( area );
     return TRUE; // TRUE = continue a surveiller la socket
+}
+
+bool on_ai_playing( GtkWidget *area )
+{
+    if ( ai_team != current_team )
+        return false;
+
+    if ( !ai_make_move() )
+        return false;
+
+    current_tour++;
+    current_team = ( current_team == RED ) ? BLUE : RED;
+
+    gtk_widget_queue_draw( area );
+    return true;
 }
