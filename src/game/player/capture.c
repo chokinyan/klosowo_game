@@ -74,6 +74,18 @@ bool capture( Position target_position )
     return true;
 }
 
+bool capture_win( Position target_position )
+{
+    BoardCell target = game_board[target_position.x][target_position.y];
+
+    if ( target.pawn == RED_KING || target.pawn == BLUE_KING )
+    {
+        return true;
+    }
+
+    return false;
+}
+
 bool check_seultout( Position start, Position end, TeamsColor pawn_team, BoardCell board[BOARD_ROWS][BOARD_COLS] )
 {
     if ( start.x != end.x ) // Check for x
@@ -117,7 +129,8 @@ bool check_seultout( Position start, Position end, TeamsColor pawn_team, BoardCe
     return false;
 }
 
-void check_linca( Position pos, TeamsColor pawn_team, Position *kill_pawn_position, BoardCell board[BOARD_ROWS][BOARD_COLS] )
+void check_linca( Position pos, TeamsColor pawn_team, Position *kill_pawn_position,
+                  BoardCell board[BOARD_ROWS][BOARD_COLS] )
 {
     // Start Check for x up
     if ( !is_out_of_bound( ( Position ){ .x = pos.x + 1, .y = pos.y } ) &&

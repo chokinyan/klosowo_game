@@ -33,6 +33,8 @@ bool seultout( Position start, Position end, TeamsColor pawn_team );
  */
 bool capture( Position target_position );
 
+bool capture_win( Position target_position );
+
 bool check_seultout( Position start, Position end, TeamsColor pawn_team, BoardCell board[BOARD_ROWS][BOARD_COLS] );
 
 void check_linca( Position pos, TeamsColor pawn_team, Position *kill_pawn_position, BoardCell board[BOARD_ROWS][BOARD_COLS] );

@@ -9,7 +9,7 @@ enum
 {
     AI_DEPTH = 3,
     AI_MAX_PIECES = 10,
-    AI_MAX_INF = 1000000000000,
+    AI_MAX_INF = 10000000,
     AI_MIN_INF = -AI_MAX_INF
 };
 
@@ -25,9 +25,14 @@ typedef struct AiTreeNode
 {
     TeamsColor team;
     struct AiTreeNode *children;
-    int child_count;
+    short child_count;
     BoardCell board_state[BOARD_ROWS][BOARD_COLS];
     PieceMaxPosAble piece_positions[AI_MAX_PIECES];
+    Position ai_team_pos[AI_MAX_PIECES];
+    short start_x;
+    short start_y;
+    short end_x;
+    short end_y;
     bool is_wining;
 } AiTreeNode;
 
