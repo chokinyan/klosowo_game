@@ -7,7 +7,7 @@ extern AiTreeNode *AiTreeBase;
 
 int ai_eval();
 
-int calculate_heuristic();
+int calculate_heuristic( AiTreeNode *node );
 
 int min_max( int depth, int heuristic, int alpha, int beta, AiTreeNode *node );
 

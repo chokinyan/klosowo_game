@@ -18,14 +18,7 @@ void init_min_max()
     min_max( AI_DEPTH, 0, AI_MIN_INF, AI_MAX_INF, AiTreeBase );
 }
 
-int ai_eval()
-{
-    int score = 0;
-
-    return score;
-}
-
-int calculate_heuristic()
+int calculate_heuristic( AiTreeNode *node )
 {
     int heuristic = 0;
 
@@ -35,11 +28,11 @@ int calculate_heuristic()
 int min_max( int depth, int heuristic, int alpha, int beta, AiTreeNode *node )
 {
     if ( depth == 0 )
-        return calculate_heuristic();
+        return calculate_heuristic( node );
 
     if ( current_team != ai_team )
     {
-        int m = ai_eval();
+        int m = AI_MAX_INF;
         for ( int i = 0; i < node->child_count; i++ )
         {
             int eval = min_max( depth - 1, heuristic, alpha, beta, node->children + i );
@@ -54,7 +47,7 @@ int min_max( int depth, int heuristic, int alpha, int beta, AiTreeNode *node )
     }
     else
     {
-        int m = ai_eval();
+        int m = AI_MIN_INF;
         for ( int i = 0; i < node->child_count; i++ )
         {
             int eval = min_max( depth - 1, heuristic, alpha, beta, node->children + i );
