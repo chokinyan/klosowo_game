@@ -8,23 +8,6 @@
 
 AiTreeNode *AiTreeBase = NULL;
 
-void init_min_max()
-{
-    // Initialize the min-max algorithm
-    AiTreeBase = (AiTreeNode *)malloc( sizeof( AiTreeNode ) );
-    AiTreeBase->children = NULL;
-    AiTreeBase->child_count = 0;
-    memcpy( AiTreeBase->ai_team_pos, ( AiTreeBase->team == RED ) ? red_team_pices_pos : blue_team_pices_pos,
-            sizeof( AiTreeBase->ai_team_pos ) );
-    memcpy( AiTreeBase->enemy_team_pos, ( ai_team == RED ) ? blue_team_pices_pos : red_team_pices_pos,
-            sizeof( AiTreeBase->enemy_team_pos ) );
-    AiTreeBase->team = ai_team;
-    memcpy( AiTreeBase->board_state, game_board, sizeof( BoardCell ) * BOARD_ROWS * BOARD_COLS );
-
-    generate_child( AiTreeBase );
-    min_max( AI_DEPTH, 0, AI_MIN_INF, AI_MAX_INF, AiTreeBase );
-}
-
 static bool is_path_clear_on_board( Position start, Position end, BoardCell board[BOARD_ROWS][BOARD_COLS] )
 {
     if ( start.x < 0 || start.x >= BOARD_ROWS || start.y < 0 || start.y >= BOARD_COLS )
@@ -67,6 +50,7 @@ int calculate_heuristic( AiTreeNode *node )
     int my_control = 0, enemy_control = 0;
     int my_soldiers = 0, enemy_soldiers = 0;
     Position my_king = { -1, -1 };
+    Position enemy_king = { -1, -1 };
 
     for ( int x = 0; x < BOARD_ROWS; x++ )
     {
@@ -90,6 +74,8 @@ int calculate_heuristic( AiTreeNode *node )
                     my_king = ( Position ){ x, y };
                 else if ( pawn == BLUE_SOLDIER )
                     enemy_soldiers++;
+                else if ( pawn == BLUE_KING )
+                    enemy_king = ( Position ){ x, y };
             }
             else
             {
@@ -99,6 +85,8 @@ int calculate_heuristic( AiTreeNode *node )
                     my_king = ( Position ){ x, y };
                 else if ( pawn == RED_SOLDIER )
                     enemy_soldiers++;
+                else if ( pawn == RED_KING )
+                    enemy_king = ( Position ){ x, y };
             }
         }
     }
@@ -114,6 +102,11 @@ int calculate_heuristic( AiTreeNode *node )
     {
         int dist = abs( my_king.x - enemy_city.x ) + abs( my_king.y - enemy_city.y );
         score += ( 20 - dist );
+    }
+    if ( enemy_king.x != -1 )
+    {
+        int dist = abs( enemy_king.x - enemy_city.x ) + abs( enemy_king.y - enemy_city.y );
+        score -= ( 50 - dist );
     }
 
     return score;
@@ -168,7 +161,6 @@ void generate_child( AiTreeNode *node )
 
     bool node_is_ai = ( node->team == ai_team );
     Position *mover_pos = node_is_ai ? node->ai_team_pos : node->enemy_team_pos;
-    Position *opponent_pos = node_is_ai ? node->enemy_team_pos : node->ai_team_pos;
 
     for ( int i = 0; i < AI_MAX_PIECES; i++ )
     {
@@ -210,7 +202,10 @@ void generate_child( AiTreeNode *node )
 
                 // Applique une eventuelle capture (Linca/Seultou) sur la copie de l'enfant
                 Position victim[4] = { { -1, -1 }, { -1, -1 }, { -1, -1 }, { -1, -1 } };
-                check_linca( end, node->team, victim, game_board );
+                check_linca( end, node->team, victim, node->board_state );
+
+                // start check linca capture
+
                 for ( short v = 0; v < 4; v++ )
                 {
                     if ( victim[v].x != -1 )
@@ -230,10 +225,67 @@ void generate_child( AiTreeNode *node )
                     }
                 }
 
+                // end check linca capture
+
+                // Start check for Seultou capture (only if the move is horizontal or vertical)
+
+                if ( start.x != end.x ) // Check for x
+                {
+                    char step = start.x < end.x ? 1 : -1;
+                    if ( check_seultout( start, end, node->team, child->board_state ) )
+                    {
+                        child->board_state[end.x + step][end.y] = ( BoardCell ){ 0 };
+                        for ( int k = 0; k < AI_MAX_PIECES; k++ )
+                        {
+                            Position *child_opponent_pos = node_is_ai ? child->enemy_team_pos : child->ai_team_pos;
+                            if ( child_opponent_pos[k].x == end.x + step && child_opponent_pos[k].y == end.y )
+                            {
+                                child_opponent_pos[k] = ( Position ){ -1, -1 };
+                                break;
+                            }
+                        }
+                    }
+                }
+                else // Check for y
+                {
+                    char step = start.y < end.y ? 1 : -1;
+
+                    if ( check_seultout( start, end, node->team, child->board_state ) )
+                    {
+                        child->board_state[end.x][end.y + step] = ( BoardCell ){ 0 };
+                        for ( int k = 0; k < AI_MAX_PIECES; k++ )
+                        {
+                            Position *child_opponent_pos = node_is_ai ? child->enemy_team_pos : child->ai_team_pos;
+                            if ( child_opponent_pos[k].x == end.x && child_opponent_pos[k].y == end.y + step )
+                            {
+                                child_opponent_pos[k] = ( Position ){ -1, -1 };
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                // end check for Seultou capture
+
                 node->child_count++;
             }
         }
     }
+}
+
+void free_tree( AiTreeNode *node )
+{
+    if ( node == NULL )
+        return;
+
+    for ( int i = 0; i < node->child_count; i++ )
+    {
+        free_tree( &node->children[i] );
+    }
+
+    free( node->children );
+    node->children = NULL;
+    node->child_count = 0;
 }
 
 bool minimax_ai_move()
@@ -276,7 +328,7 @@ bool minimax_ai_move()
     {
         log_debug( "AI move successful." );
         network_send_move( ( Position ){ .x = start.y, .y = start.x }, ( Position ){ .x = end.y, .y = end.x } );
-        free( root.children );
+        free_tree( &root );
         return true;
     }
 
@@ -284,6 +336,6 @@ bool minimax_ai_move()
     {
         log_debug( "AI move successful." );
     }
-    free( root.children );
+    free_tree( &root );
     return result;
 }

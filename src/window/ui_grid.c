@@ -309,6 +309,10 @@ gboolean on_network_data( GIOChannel *source, GIOCondition condition, gpointer u
 
 gboolean on_ai_playing( GtkWidget *area )
 {
+
+    if ( game_ended )
+        return FALSE;
+
     if ( ai_team != current_team )
         return TRUE;
 
