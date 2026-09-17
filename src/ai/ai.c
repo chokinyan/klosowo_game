@@ -18,20 +18,15 @@ bool ai_place_barrer()
 
         if ( place_barrer( pos ) )
         {
-            if ( ( is_server || is_client ) && is_connected )
+            if ( is_server || is_client )
             {
-                Position start = ai_team == RED ? ( Position ){ .x = 0, .y = 0 } : ( Position ){ .x = 6, .y = 10 };
-                int result = network_send_move( ( Position ){ .x = start.y, .y = start.x },
-                                                ( Position ){ .x = pos.y, .y = pos.x } );
-                if ( result == 0 )
-                    log_error( "Erreur lors de l'envoi du message du mur par l'IA." );
+                Position sentinel =
+                    ( ai_team == RED ) ? ( Position ){ .x = 10, .y = 6 } : ( Position ){ .x = 0, .y = 0 };
+                network_send_move( sentinel,
+                                   ( Position ){ .x = pos.y, .y = pos.x } ); // même swap x/y que le code humain
             }
-
-            log_debug( "AI barrier placed at (%d,%d)", pos.x, pos.y );
             return true;
         }
-        return true;
     }
-
     return false;
 }

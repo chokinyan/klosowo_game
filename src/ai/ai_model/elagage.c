@@ -271,18 +271,18 @@ bool minimax_ai_move()
 
     log_debug( "AI move: (%d,%d) -> (%d,%d)", start.x, start.y, end.x, end.y );
     bool result = moove_player( start, end, ai_team, game_board ); // le VRAI coup, sur le VRAI plateau
+
+    if ( result && ( is_server || is_client ) )
+    {
+        log_debug( "AI move successful." );
+        network_send_move( ( Position ){ .x = start.y, .y = start.x }, ( Position ){ .x = end.y, .y = end.x } );
+        free( root.children );
+        return true;
+    }
+
     if ( result )
     {
         log_debug( "AI move successful." );
-
-        if ( is_connected )
-        {
-
-            int result =
-                network_send_move( ( Position ){ .x = start.y, .y = start.x }, ( Position ){ .x = end.y, .y = end.x } );
-            if ( result == 0 )
-                log_error( "Erreur lors de l'envoi du message au serveur.\n" );
-        }
     }
     free( root.children );
     return result;
