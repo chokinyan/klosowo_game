@@ -126,6 +126,7 @@ int min_max( int depth, int heuristic, int alpha, int beta, AiTreeNode *node )
         for ( int i = 0; i < node->child_count; i++ )
         {
             int eval = min_max( depth - 1, heuristic, alpha, beta, node->children + i );
+            free_tree( node->children + i );
             if ( eval < m )
                 m = eval;
             else if ( m <= alpha )
@@ -141,6 +142,7 @@ int min_max( int depth, int heuristic, int alpha, int beta, AiTreeNode *node )
         for ( int i = 0; i < node->child_count; i++ )
         {
             int eval = min_max( depth - 1, heuristic, alpha, beta, node->children + i );
+            free_tree( node->children + i );
             if ( eval > m )
                 m = eval;
             else if ( m >= beta )
@@ -311,6 +313,7 @@ bool minimax_ai_move()
     for ( int i = 0; i < root.child_count; i++ )
     {
         int value = min_max( AI_DEPTH - 1, 0, AI_MIN_INF, AI_MAX_INF, &root.children[i] );
+        free_tree( &root.children[i] ); // Free the child node after evaluation
         if ( value > best_value )
         {
             best_value = value;
