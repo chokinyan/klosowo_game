@@ -7,7 +7,7 @@
 
 enum
 {
-    AI_DEPTH = 4,
+    AI_DEPTH = 3,
     AI_MAX_PIECES = 10,
     AI_MAX_INF = 10000000,
     AI_MIN_INF = -AI_MAX_INF

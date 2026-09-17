@@ -3,10 +3,13 @@
 #include "types/types.h"
 #include <arpa/inet.h>
 #include <errno.h>
+#include <netinet/in.h>
+#include <stdio.h>
 #include <string.h>
 #include <unistd.h>
 
 char *opposent_ip = NULL;
+static char opposent_ip_buffer[INET_ADDRSTRLEN];
 
 bool init_server( struct sockaddr_in addr )
 {
@@ -51,15 +54,20 @@ bool init_server( struct sockaddr_in addr )
     log_info( "Serveur: en attente d'une connexion cliente" );
 
     // 4. On accepte le joueur client qui se connecte
-    sock_fd = accept( listen_fd, NULL, NULL );
-    if ( opposent_ip == NULL )
-        opposent_ip = inet_ntoa( addr.sin_addr );
+    struct sockaddr_in client_addr;
+    socklen_t client_addr_len = sizeof( client_addr );
+    sock_fd = accept( listen_fd, (struct sockaddr *)&client_addr, &client_addr_len );
+    close( listen_fd );
 
     if ( sock_fd < 0 )
     {
         log_error( "Serveur: accept() a échoué: %s", strerror( errno ) );
         return 0;
     }
+
+    if ( inet_ntop( AF_INET, &client_addr.sin_addr, opposent_ip_buffer, sizeof( opposent_ip_buffer ) ) == NULL )
+        snprintf( opposent_ip_buffer, sizeof( opposent_ip_buffer ), "inconnue" );
+    opposent_ip = opposent_ip_buffer;
 
     log_info( "Serveur: client connecté (fd=%d, adresse=%s)", sock_fd, opposent_ip );
     return 1;
@@ -95,6 +103,7 @@ int network_receive( char *buffer, int max_len )
     int bytes = recv( sock_fd, buffer, max_len - 1, 0 );
     if ( bytes <= 0 )
     {
+        is_connected = false;
         if ( bytes == 0 )
         {
             log_warn( "Serveur: le client a fermé la connexion" );

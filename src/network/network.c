@@ -1,9 +1,11 @@
 #include "network/network.h"
+#include "log/log.h"
 #include "network/client.h"
 #include "network/server.h"
 
 #include "types/types.h"
 #include <arpa/inet.h>
+#include <errno.h>
 #include <regex.h>
 #include <string.h>
 #include <sys/socket.h>
@@ -16,34 +18,47 @@ bool is_connected = false;
 
 int network_init( int is_server, const char *ip, int port )
 {
+    log_debug( "Réseau: initialisation en mode %s, adresse=%s, port=%d", is_server ? "serveur" : "client",
+               ip != NULL ? ip : "(aucune)", port );
+
+    if ( port < 1 || port > 65535 )
+    {
+        log_error( "Réseau: port invalide: %d", port );
+        is_connected = false;
+        return 0;
+    }
+
     // On prepare la structure de l'adresse avec le port
     struct sockaddr_in addr;
     memset( &addr, 0, sizeof( addr ) );
     addr.sin_family = AF_INET;
     addr.sin_port = htons( (unsigned short)port );
 
-    if ( is_server )
-    {
+    bool initialized = is_server ? init_server( addr ) : init_client( ip, addr );
+    is_connected = initialized;
 
-        init_server( addr );
-    }
-    else
+    if ( !initialized )
     {
-
-        init_client( ip, addr );
+        log_error( "Réseau: initialisation échouée (errno=%d: %s)", errno, strerror( errno ) );
+        return 0;
     }
-    is_connected = true;
-    return 1; // La connexion est reussie !
+
+    log_info( "Réseau: connexion établie (fd=%d)", sock_fd );
+    return 1;
 }
 
 void network_close( void )
 {
+    log_debug( "Réseau: fermeture demandée (fd=%d, connecté=%s)", sock_fd, is_connected ? "oui" : "non" );
+
     // Si la socket est ouverte, on la ferme proprement
     if ( sock_fd >= 0 )
     {
         close( sock_fd );
         sock_fd = -1;
     }
+
+    is_connected = false;
 }
 
 bool check_good_format( char *recvbuffer )

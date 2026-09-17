@@ -1,6 +1,8 @@
 #include "ai/ai_model/elagage.h"
 #include "game/player/capture.h"
 #include "game/player/movement.h"
+#include "log/log.h"
+#include "network/client.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -267,8 +269,21 @@ bool minimax_ai_move()
     Position start = { root.children[best_index].start_x, root.children[best_index].start_y };
     Position end = { root.children[best_index].end_x, root.children[best_index].end_y };
 
+    log_debug( "AI move: (%d,%d) -> (%d,%d)", start.x, start.y, end.x, end.y );
     bool result = moove_player( start, end, ai_team, game_board ); // le VRAI coup, sur le VRAI plateau
+    if ( result )
+    {
+        log_debug( "AI move successful." );
 
+        if ( is_connected )
+        {
+
+            int result =
+                network_send_move( ( Position ){ .x = start.y, .y = start.x }, ( Position ){ .x = end.y, .y = end.x } );
+            if ( result == 0 )
+                log_error( "Erreur lors de l'envoi du message au serveur.\n" );
+        }
+    }
     free( root.children );
     return result;
 }

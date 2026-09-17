@@ -253,13 +253,19 @@ void cell_on_click( GtkGestureClick *gesture, int n_press, double x, double y, g
 gboolean on_network_data( GIOChannel *source, GIOCondition condition, gpointer user_data )
 {
     (void)source;
-    (void)condition;
     GtkWidget *area = GTK_WIDGET( user_data );
+
+    if ( condition & ( G_IO_HUP | G_IO_ERR | G_IO_NVAL ) )
+    {
+        log_warn( "Connexion réseau interrompue (condition=%u)", condition );
+        is_connected = false;
+        return FALSE;
+    }
 
     char buffer[30];
     int bytes = network_receive( buffer, sizeof( buffer ) );
     if ( bytes <= 0 )
-        return TRUE; // rien de valide recu, on continue quand meme a surveiller
+        return is_connected; // Le watch est supprimé si la connexion est fermée.
 
     Position start, end;
 

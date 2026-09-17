@@ -88,12 +88,14 @@ int main( int argc, char **argv )
     if ( is_server )
     {
         log_info( "Lancement du serveur sur le port %d...\n", port );
-        network_init( 1, NULL, port );
+        if ( !network_init( 1, NULL, port ) )
+            return 1;
     }
     else if ( is_client )
     {
         log_info( "Connexion au serveur %s sur le port %d...\n", ip_address, port );
-        network_init( 0, ip_address, port );
+        if ( !network_init( 0, ip_address, port ) )
+            return 1;
     }
     else if ( is_ai_mode )
     {
