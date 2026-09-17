@@ -1,4 +1,5 @@
 #include "ai/ai_model/elagage.h"
+#include "game/player/capture.h"
 #include "game/player/movement.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -11,9 +12,10 @@ void init_min_max()
     AiTreeBase = (AiTreeNode *)malloc( sizeof( AiTreeNode ) );
     AiTreeBase->children = NULL;
     AiTreeBase->child_count = 0;
-    AiTreeBase->is_wining = false;
     memcpy( AiTreeBase->ai_team_pos, ( AiTreeBase->team == RED ) ? red_team_pices_pos : blue_team_pices_pos,
             sizeof( AiTreeBase->ai_team_pos ) );
+    memcpy( AiTreeBase->enemy_team_pos, ( ai_team == RED ) ? blue_team_pices_pos : red_team_pices_pos,
+            sizeof( AiTreeBase->enemy_team_pos ) );
     AiTreeBase->team = ai_team;
     memcpy( AiTreeBase->board_state, game_board, sizeof( BoardCell ) * BOARD_ROWS * BOARD_COLS );
 
@@ -159,9 +161,13 @@ void generate_child( AiTreeNode *node )
     node->child_count = 0;
     node->children = NULL;
 
+    bool node_is_ai = ( node->team == ai_team );
+    Position *mover_pos = node_is_ai ? node->ai_team_pos : node->enemy_team_pos;
+    Position *opponent_pos = node_is_ai ? node->enemy_team_pos : node->ai_team_pos;
+
     for ( int i = 0; i < AI_MAX_PIECES; i++ )
     {
-        Position start = node->ai_team_pos[i];
+        Position start = mover_pos[i];
         if ( start.x == -1 && start.y == -1 )
             continue;
 
@@ -170,6 +176,7 @@ void generate_child( AiTreeNode *node )
             for ( int y = 0; y < BOARD_COLS; y++ )
             {
                 Position end = { .x = x, .y = y };
+
                 if ( !is_path_clear_on_board( start, end, node->board_state ) )
                     continue;
 
@@ -178,9 +185,8 @@ void generate_child( AiTreeNode *node )
                 AiTreeNode *child = &node->children[node->child_count];
 
                 child->team = ( node->team == RED ) ? BLUE : RED;
-                child->child_count = 0;
                 child->children = NULL;
-                child->is_wining = false;
+                child->child_count = 0;
                 child->start_x = start.x;
                 child->start_y = start.y;
                 child->end_x = end.x;
@@ -188,27 +194,33 @@ void generate_child( AiTreeNode *node )
 
                 memcpy( child->board_state, node->board_state, sizeof( child->board_state ) );
                 memcpy( child->ai_team_pos, node->ai_team_pos, sizeof( child->ai_team_pos ) );
+                memcpy( child->enemy_team_pos, node->enemy_team_pos, sizeof( child->enemy_team_pos ) );
 
-                // Deplace juste la piece (les captures Seultou/Linca ne sont pas simulees ici,
-                // pour rester simple -- le vrai jeu les gere normalement quand le coup est reellement joue)
-                if ( child->board_state[end.x][end.y].type == RED_CAMP ||
-                     child->board_state[end.x][end.y].type == BLUE_CAMP )
-                {
-                    child->board_state[end.x][end.y].pawn = child->board_state[start.x][start.y].pawn;
-                }
-                else
-                {
-                    child->board_state[end.x][end.y].type = ( node->team == RED ) ? RED_TEAM : BLUE_TEAM;
-                    child->board_state[end.x][end.y].pawn = child->board_state[start.x][start.y].pawn;
-                }
-                child->board_state[start.x][start.y].pawn = NULL_PAWN;
+                // Deplace la piece dans la copie de l'enfant
+                Position *child_mover_pos = node_is_ai ? child->ai_team_pos : child->enemy_team_pos;
+                child_mover_pos[i] = end;
 
-                for ( int p = 0; p < AI_MAX_PIECES; p++ )
-                    if ( child->ai_team_pos[p].x == start.x && child->ai_team_pos[p].y == start.y )
+                child->board_state[end.x][end.y] = child->board_state[start.x][start.y];
+                child->board_state[start.x][start.y] = ( BoardCell ){ 0 };
+
+                // Applique une eventuelle capture (Linca/Seultou) sur la copie de l'enfant
+                Position victim = { -1, -1 };
+                check_linca( end, node->team, &victim, game_board );
+
+                if ( victim.x != -1 )
+                {
+                    child->board_state[victim.x][victim.y] = ( BoardCell ){ 0 };
+
+                    Position *child_opponent_pos = node_is_ai ? child->enemy_team_pos : child->ai_team_pos;
+                    for ( int k = 0; k < AI_MAX_PIECES; k++ )
                     {
-                        child->ai_team_pos[p] = end;
-                        break;
+                        if ( child_opponent_pos[k].x == victim.x && child_opponent_pos[k].y == victim.y )
+                        {
+                            child_opponent_pos[k] = ( Position ){ -1, -1 };
+                            break;
+                        }
                     }
+                }
 
                 node->child_count++;
             }
@@ -223,6 +235,8 @@ bool minimax_ai_move()
     memcpy( root.board_state, game_board, sizeof( root.board_state ) );
     memcpy( root.ai_team_pos, ( ai_team == RED ) ? red_team_pices_pos : blue_team_pices_pos,
             sizeof( root.ai_team_pos ) );
+    memcpy( root.enemy_team_pos, ( ai_team == RED ) ? blue_team_pices_pos : red_team_pices_pos,
+            sizeof( root.enemy_team_pos ) );
     root.children = NULL;
     root.child_count = 0;
 
