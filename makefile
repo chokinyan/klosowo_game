@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -O3 -Wall -Wextra -g -Iinclude `pkg-config --cflags gtk4`
+CFLAGS = -fsanitize=address -fno-omit-frame-pointer -O3 -Wall -Wextra -g -Iinclude `pkg-config --cflags gtk4`
 LIBS = `pkg-config --libs gtk4`
 
 SRC_DIR = src

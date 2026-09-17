@@ -122,6 +122,9 @@ int min_max( int depth, int heuristic, int alpha, int beta, AiTreeNode *node )
     if ( depth == 0 )
         return calculate_heuristic( node );
 
+    if ( node->child_count == 0 )
+        generate_child( node );
+
     if ( node->team != ai_team )
     {
         int m = AI_MAX_INF;
@@ -204,20 +207,23 @@ void generate_child( AiTreeNode *node )
                 child->board_state[start.x][start.y] = ( BoardCell ){ 0 };
 
                 // Applique une eventuelle capture (Linca/Seultou) sur la copie de l'enfant
-                Position victim = { -1, -1 };
-                check_linca( end, node->team, &victim, game_board );
-
-                if ( victim.x != -1 )
+                Position victim[4] = { { -1, -1 }, { -1, -1 }, { -1, -1 }, { -1, -1 } };
+                check_linca( end, node->team, victim, game_board );
+                for ( short v = 0; v < 4; v++ )
                 {
-                    child->board_state[victim.x][victim.y] = ( BoardCell ){ 0 };
-
-                    Position *child_opponent_pos = node_is_ai ? child->enemy_team_pos : child->ai_team_pos;
-                    for ( int k = 0; k < AI_MAX_PIECES; k++ )
+                    if ( victim[v].x != -1 )
                     {
-                        if ( child_opponent_pos[k].x == victim.x && child_opponent_pos[k].y == victim.y )
+                        child->board_state[victim[v].x][victim[v].y] = ( BoardCell ){ 0 };
+
+                        Position *child_opponent_pos = node_is_ai ? child->enemy_team_pos : child->ai_team_pos;
+
+                        for ( int k = 0; k < AI_MAX_PIECES; k++ )
                         {
-                            child_opponent_pos[k] = ( Position ){ -1, -1 };
-                            break;
+                            if ( child_opponent_pos[k].x == victim[v].x && child_opponent_pos[k].y == victim[v].y )
+                            {
+                                child_opponent_pos[k] = ( Position ){ -1, -1 };
+                                break;
+                            }
                         }
                     }
                 }
