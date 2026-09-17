@@ -58,16 +58,30 @@ void init_game_board( GtkWidget *window )
 
     click = gtk_gesture_click_new();
     if ( is_local )
-        g_signal_connect( click, "pressed", G_CALLBACK( cell_on_click ), area );
-    else if ( is_server )
-        g_io_add_watch( g_io_channel_unix_new( sock_fd ), G_IO_IN, on_network_data, area );
-    else if ( is_client )
     {
-        g_io_add_watch( g_io_channel_unix_new( sock_fd ), G_IO_IN, on_network_data, area );
+        log_debug( "Local mode, connecting click event" );
         g_signal_connect( click, "pressed", G_CALLBACK( cell_on_click ), area );
     }
-    else if ( is_ai_mode )
+    if ( is_server )
+    {
+        log_debug( "Server mode, connecting network event" );
+        g_io_add_watch( g_io_channel_unix_new( sock_fd ), G_IO_IN, on_network_data, area );
+    }
+    if ( is_client )
+    {
+        log_debug( "Client mode, connecting network event" );
+        g_io_add_watch( g_io_channel_unix_new( sock_fd ), G_IO_IN, on_network_data, area );
+        if ( !is_ai_mode )
+        {
+            log_debug( "Client mode, connecting click event" );
+            g_signal_connect( click, "pressed", G_CALLBACK( cell_on_click ), area );
+        }
+    }
+    if ( is_ai_mode )
+    {
+        log_debug( "AI mode, connecting AI event" );
         g_timeout_add( 100, (GSourceFunc)on_ai_playing, area );
+    }
 
     gtk_widget_add_controller( area, GTK_EVENT_CONTROLLER( click ) );
 
