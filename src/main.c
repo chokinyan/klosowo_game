@@ -95,6 +95,19 @@ int main( int argc, char **argv )
         log_info( "Connexion au serveur %s sur le port %d...\n", ip_address, port );
         network_init( 0, ip_address, port );
     }
+    else if ( is_ai_mode )
+    {
+        log_info( "Lancement du mode IA...\n" );
+    }
+    else if ( is_local )
+    {
+        log_info( "Lancement du mode local...\n" );
+    }
+    else
+    {
+        log_error( "Erreur : Vous devez spécifier un mode de jeu (-s, -c, -ia ou -l).\n" );
+        return 1;
+    }
 
     GtkApplication *app;
     int status;

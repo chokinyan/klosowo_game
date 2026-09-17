@@ -4,7 +4,7 @@
 #include "log/log.h"
 #include <string.h>
 
-bool moove_player( Position start, Position end, TeamsColor pawn_team )
+bool moove_player( Position start, Position end, TeamsColor pawn_team, BoardCell board[BOARD_ROWS][BOARD_COLS] )
 {
 
     if ( !is_position_accessible( start, end ) )
@@ -15,25 +15,25 @@ bool moove_player( Position start, Position end, TeamsColor pawn_team )
 
     is_conquete( start, end );
 
-    if ( game_board[end.x][end.y].type == RED_CAMP || game_board[end.x][end.y].type == BLUE_CAMP )
+    if ( board[end.x][end.y].type == RED_CAMP || board[end.x][end.y].type == BLUE_CAMP )
     {
-        game_board[end.x][end.y].pawn = game_board[start.x][start.y].pawn;
+        board[end.x][end.y].pawn = board[start.x][start.y].pawn;
     }
     else
     {
         switch ( current_team )
         {
         case RED:
-            game_board[end.x][end.y].type = RED_TEAM;
+            board[end.x][end.y].type = RED_TEAM;
             break;
         case BLUE:
-            game_board[end.x][end.y].type = BLUE_TEAM;
+            board[end.x][end.y].type = BLUE_TEAM;
             break;
         }
-        game_board[end.x][end.y].pawn = game_board[start.x][start.y].pawn;
+        board[end.x][end.y].pawn = board[start.x][start.y].pawn;
     }
 
-    game_board[start.x][start.y].pawn = NULL_PAWN;
+    board[start.x][start.y].pawn = NULL_PAWN;
 
     Position team_playing_pieces[10];
 
@@ -101,7 +101,7 @@ bool is_movement_possible( Position start, Position end )
 bool place_barrer( Position pos )
 {
 
-    if ( !check_barrer( pos ) )
+    if ( !check_barrer( pos, game_board ) )
         return false;
 
     game_board[pos.x][pos.y].type = BARRER;
@@ -112,9 +112,9 @@ bool place_barrer( Position pos )
 bool is_conquete( Position start, Position end )
 {
 
-    if ( check_conquete( start, end ).is_ok )
+    if ( check_conquete( start, end, game_board ).is_ok )
     {
-        end_game( check_conquete( start, end ).team );
+        end_game( check_conquete( start, end, game_board ).team );
         return true;
     }
 
@@ -140,23 +140,23 @@ bool is_the_team( TeamsColor player_color, Position pos )
     return false;
 }
 
-Conquete check_conquete( Position start, Position end )
+Conquete check_conquete( Position start, Position end, BoardCell board[BOARD_ROWS][BOARD_COLS] )
 {
-    PawnType pawn = game_board[start.x][start.y].pawn;
+    PawnType pawn = board[start.x][start.y].pawn;
 
     {
         switch ( pawn )
         {
 
         case RED_KING:
-            if ( game_board[end.x][end.y].type == BLUE_CAMP )
+            if ( board[end.x][end.y].type == BLUE_CAMP )
             {
                 Conquete conquete = { .is_ok = true, .team = RED };
                 return conquete;
             }
             return ( Conquete ){ .is_ok = false };
         case BLUE_KING:
-            if ( game_board[end.x][end.y].type == RED_CAMP )
+            if ( board[end.x][end.y].type == RED_CAMP )
             {
                 end_game( BLUE );
                 return ( Conquete ){ .is_ok = true, .team = BLUE };
@@ -168,15 +168,15 @@ Conquete check_conquete( Position start, Position end )
     }
 }
 
-bool check_barrer( Position pos )
+bool check_barrer( Position pos, BoardCell board[BOARD_ROWS][BOARD_COLS] )
 {
     if ( is_out_of_bound( pos ) )
         return false;
 
-    if ( game_board[pos.x][pos.y].pawn != NULL_PAWN )
+    if ( board[pos.x][pos.y].pawn != NULL_PAWN )
         return false;
 
-    if ( game_board[pos.x][pos.y].type == RED_CAMP || game_board[pos.x][pos.y].type == BLUE_CAMP )
+    if ( board[pos.x][pos.y].type == RED_CAMP || board[pos.x][pos.y].type == BLUE_CAMP )
         return false;
 
     if ( !is_own_side( current_team, pos ) || is_diagonal( pos ) || is_wrong_barrer_cell( pos ) )

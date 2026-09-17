@@ -13,7 +13,7 @@
  * @return true if the move was successful, false otherwise
  */
 
-bool moove_player( Position start, Position end, TeamsColor pawn_team );
+bool moove_player( Position start, Position end, TeamsColor pawn_team, BoardCell board[BOARD_ROWS][BOARD_COLS] );
 
 /**
  * @brief Check if the position is valide
@@ -41,8 +41,8 @@ bool is_conquete( Position start,Position end );
 
 bool is_the_team( TeamsColor player_color, Position pos );
 
-Conquete check_conquete( Position start, Position end );
+Conquete check_conquete( Position start, Position end, BoardCell board[BOARD_ROWS][BOARD_COLS] );
 
-bool check_barrer( Position pos );
+bool check_barrer( Position pos, BoardCell board[BOARD_ROWS][BOARD_COLS] );
 
 #endif // KLOSNOWO_MOVEMENT_H

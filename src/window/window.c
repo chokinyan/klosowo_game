@@ -62,7 +62,10 @@ void init_game_board( GtkWidget *window )
     else if ( is_server )
         g_io_add_watch( g_io_channel_unix_new( sock_fd ), G_IO_IN, on_network_data, area );
     else if ( is_client )
+    {
         g_io_add_watch( g_io_channel_unix_new( sock_fd ), G_IO_IN, on_network_data, area );
+        g_signal_connect( click, "pressed", G_CALLBACK( cell_on_click ), area );
+    }
     else if ( is_ai_mode )
         g_timeout_add( 100, (GSourceFunc)on_ai_playing, area );
 

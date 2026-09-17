@@ -26,7 +26,7 @@ bool rng_ai()
 
             Position end = { .x = rand() % BOARD_ROWS, .y = rand() % BOARD_COLS };
 
-            if ( moove_player( piece, end, ai_team ) )
+            if ( moove_player( piece, end, ai_team, game_board ) )
             {
                 memcpy( ai_team == RED ? red_team_pices_pos : blue_team_pices_pos, ai_piece_pos,
                         sizeof( ai_piece_pos ) );

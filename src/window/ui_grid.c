@@ -183,7 +183,7 @@ void cell_on_click( GtkGestureClick *gesture, int n_press, double x, double y, g
             Position end = { .x = row, .y = col };
 
             if ( is_movement_possible( start, end ) )
-                if ( moove_player( start, end, current_team ) )
+                if ( moove_player( start, end, current_team, game_board ) )
                 {
                     if ( is_connected )
                     {
@@ -290,7 +290,7 @@ gboolean on_network_data( GIOChannel *source, GIOCondition condition, gpointer u
         return TRUE; // TRUE = continue a surveiller la socket
     }
 
-    if ( moove_player( start, end, current_team ) )
+    if ( moove_player( start, end, current_team, game_board ) )
     {
         game_board[start.x][start.y].is_selected = false;
         current_tour++;

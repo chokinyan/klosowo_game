@@ -8,10 +8,8 @@ void init_min_max()
     AiTreeBase = (AiTreeNode *)malloc( sizeof( AiTreeNode ) );
     AiTreeBase->children = NULL;
     AiTreeBase->child_count = 0;
-    AiTreeBase->score = 0;
+    AiTreeBase->is_wining = false;
     AiTreeBase->team = ai_team;
-    AiTreeBase->start = ( Position ){ 0, 0 };
-    AiTreeBase->end = ( Position ){ 0, 0 };
     memcpy( AiTreeBase->board_state, game_board, sizeof( BoardCell ) * BOARD_ROWS * BOARD_COLS );
 }
 

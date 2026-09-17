@@ -23,14 +23,12 @@ typedef struct PieceMaxPosAble
 
 typedef struct AiTreeNode
 {
-    Position start;
-    Position end;
-    int score;
     TeamsColor team;
     struct AiTreeNode *children;
     int child_count;
     BoardCell board_state[BOARD_ROWS][BOARD_COLS];
     PieceMaxPosAble piece_positions[AI_MAX_PIECES];
+    bool is_wining;
 } AiTreeNode;
 
 extern Position ai_piece_pos[AI_MAX_PIECES];
