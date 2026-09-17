@@ -11,7 +11,7 @@ bool seultout( Position start, Position end, TeamsColor pawn_team )
         char step = start.x < end.x ? 1 : -1;
         if ( check_seultout( start, end, pawn_team ) )
         {
-            capture( ( Position ){ .x = end.x - step, .y = end.y } );
+            capture( ( Position ){ .x = end.x + step, .y = end.y } );
             return true;
         }
     }
@@ -21,7 +21,7 @@ bool seultout( Position start, Position end, TeamsColor pawn_team )
 
         if ( check_seultout( start, end, pawn_team ) )
         {
-            capture( ( Position ){ .x = end.x, .y = end.y - step } );
+            capture( ( Position ){ .x = end.x, .y = end.y + step } );
             return true;
         }
     }

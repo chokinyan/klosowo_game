@@ -13,6 +13,14 @@ enum
     AI_MIN_INF = -AI_MAX_INF
 };
 
+typedef struct PieceMaxPosAble
+{
+    char max_x;
+    char max_y;
+    char min_x;
+    char min_y;
+} PieceMaxPosAble;
+
 typedef struct AiTreeNode
 {
     Position start;
@@ -22,6 +30,7 @@ typedef struct AiTreeNode
     struct AiTreeNode *children;
     int child_count;
     BoardCell board_state[BOARD_ROWS][BOARD_COLS];
+    PieceMaxPosAble piece_positions[AI_MAX_PIECES];
 } AiTreeNode;
 
 extern Position ai_piece_pos[AI_MAX_PIECES];
